@@ -1,0 +1,10 @@
+questions:
+- id: ll-shipping-location
+  tier: low_level
+  answerable: true
+  question: From which location does Shipping send finished bicycles out?
+  expected_sources:
+  - pedalworks-shipping/docs/fulfillment.md
+  reference_key_facts:
+  - Shipping sends finished bicycles from the South Distribution Center
+  format_probe: false

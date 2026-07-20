@@ -1,0 +1,14 @@
+questions:
+- id: fp-xlsx-suspensionfork-stock
+  tier: low_level
+  answerable: true
+  question: According to the inventory stock spreadsheet, how many units of the Suspension
+    Fork are currently on hand, and what is its reorder threshold?
+  expected_sources:
+  - pedalworks-warehouse/data/inventory_stock.xlsx
+  reference_key_facts:
+  - 4 units on hand
+  - reorder threshold of 3
+  format_probe: true
+  notes: These figures exist only in the xlsx stock table; docs/inventory.md discusses
+    stock tracking generically with no per-part numbers.

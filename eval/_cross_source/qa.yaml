@@ -1,0 +1,256 @@
+questions:
+- id: hl-order-to-shipment
+  tier: high_level
+  answerable: true
+  persona: Ops Lead
+  question: Walk me through what happens to one City Cruiser order, from supplier
+    parts all the way to shipment.
+  expected_sources:
+  - pedalworks-order-planning/docs/pedalworks-overview.md
+  - pedalworks-order-planning/docs/planning_and_demand.md
+  - pedalworks-production/docs/production.md
+  - pedalworks-shipping/docs/fulfillment.md
+  reference_key_facts:
+  - the Planner triggers Procurement to reorder a part when PartsDB shows it low
+  - Assembly builds the City Cruiser from a Frame, Wheelset, Drivetrain, and Brake
+    Set
+  - Quality inspects the unit and reworks failures via Assembly before re-inspecting
+  - Shipping sends the finished bicycle out from the South Distribution Center and
+    marks the order shipped in OrderDB
+  format_probe: false
+- id: hl-two-hubs
+  tier: high_level
+  answerable: true
+  persona: New Engineer
+  question: I'm new here -- can you explain PedalWorks' two 'hub' roles, the Planner
+    and the Ledger, and how they differ?
+  expected_sources:
+  - pedalworks-order-planning/docs/pedalworks-overview.md
+  - pedalworks-finance/docs/finance.md
+  reference_key_facts:
+  - 'the Planner is the fan-out hub: it reads OrderDB and PartsDB, triggers Procurement
+    on low stock, and releases work to Assembly'
+  - 'the Ledger is the fan-in hub: many processes each post one cost to it'
+  - the Ledger is persisted in LedgerDB
+  format_probe: false
+- id: hl-money-trail
+  tier: high_level
+  answerable: true
+  persona: Finance Controller
+  question: For accounting purposes, walk me through every point in the factory where
+    money gets spent, from raw part purchase to final shipment.
+  expected_sources:
+  - pedalworks-procurement/docs/procurement.md
+  - pedalworks-production/docs/production.md
+  - pedalworks-shipping/docs/fulfillment.md
+  - pedalworks-finance/docs/finance.md
+  reference_key_facts:
+  - Procurement posts a Purchase Cost each time it orders parts from a supplier
+  - Assembly posts a Labor Cost each time it puts a unit together, and posts another
+    Labor Cost each time it reworks a unit that failed Quality
+  - Quality posts a Scrap Cost each time it runs an inspection, whether the unit passes
+    or fails
+  - Shipping posts a Freight Cost each time it ships a finished unit out
+  - all four postings land in the shared Ledger, backed by LedgerDB
+  format_probe: false
+- id: hl-city-cruiser-vs-trailblazer
+  tier: high_level
+  answerable: true
+  persona: Product Manager
+  question: How does building a Trail Blazer differ from building a City Cruiser,
+    from parts sourcing through assembly?
+  expected_sources:
+  - pedalworks-procurement/docs/procurement.md
+  - pedalworks-production/docs/production.md
+  reference_key_facts:
+  - 'the City Cruiser is built from four parts: a Frame, a Wheelset, a Drivetrain,
+    and a Brake Set'
+  - the Trail Blazer shares two of those three -- the Frame and the Wheelset -- but
+    swaps out the Drivetrain and Brake Set for a Suspension Fork instead
+  - every City Cruiser and every Trail Blazer goes through the same five Assembly
+    steps and the same Quality inspection
+  format_probe: false
+- id: hl-three-systems
+  tier: high_level
+  answerable: true
+  persona: Data Analyst
+  question: What are PedalWorks' three named data systems, and which stages read or
+    write each one?
+  expected_sources:
+  - pedalworks-order-planning/docs/data-model-orderdb.md
+  - pedalworks-warehouse/docs/data-model-partsdb.md
+  - pedalworks-finance/docs/data-model-ledgerdb.md
+  reference_key_facts:
+  - PartsDB holds part stock levels, read and written by Inventory, the Planner, and
+    Procurement
+  - OrderDB holds customer orders, read by the Planner to find open orders and updated
+    by Shipping when an order is marked shipped
+  - LedgerDB is the backing store for the Ledger, holding every posted LedgerEntry
+  format_probe: false
+- id: mh-planner-to-ledger
+  tier: multi_hop
+  answerable: true
+  hops: 2
+  chain: Planner --reorders--> Procurement --posts--> Ledger
+  question: Trace how the Planner noticing low stock eventually turns into an entry
+    in the Ledger.
+  expected_sources:
+  - pedalworks-order-planning/docs/planning_and_demand.md
+  - pedalworks-procurement/docs/procurement.md
+  reference_key_facts:
+  - the Planner triggers Procurement to place an order when a part's stock has run
+    low
+  - Procurement posts that purchase cost to the Ledger
+  format_probe: false
+- id: mh-ledger-fanin-quality-shipping
+  tier: multi_hop
+  answerable: true
+  hops: 2
+  chain: Quality --posts--> Ledger <--posts-- Shipping
+  question: Quality and Shipping are different stages, but they both feed the same
+    downstream record. Which one, and what does each stage post to it?
+  expected_sources:
+  - pedalworks-production/docs/production.md
+  - pedalworks-shipping/docs/fulfillment.md
+  - pedalworks-finance/docs/finance.md
+  reference_key_facts:
+  - Quality posts a scrap cost to the Ledger
+  - Shipping posts a freight cost to the Ledger
+  - both postings converge in the same Ledger, backed by LedgerDB
+  format_probe: false
+- id: mh-frame-supplier-to-trailblazer
+  tier: multi_hop
+  answerable: true
+  hops: 2
+  chain: Frames Ltd --supplies--> Frame --used_in--> Trail Blazer
+  question: The Frame feeds into both PedalWorks bicycle models. Which supplier provides
+    it, and which second model besides the City Cruiser uses it?
+  expected_sources:
+  - pedalworks-procurement/docs/procurement.md
+  - pedalworks-production/docs/production.md
+  reference_key_facts:
+  - Frames Ltd supplies the Frame
+  - the Trail Blazer shares the Frame with the City Cruiser
+  format_probe: false
+- id: mh-forks-to-assembly
+  tier: multi_hop
+  answerable: true
+  hops: 3
+  chain: Forks Co --supplies--> Suspension Fork --used_in--> Trail Blazer <--produces--
+    Assembly
+  question: 'Trace the Suspension Fork from its supplier to the finished bicycle:
+    who supplies it, which model uses it, and which stage produces that model?'
+  expected_sources:
+  - pedalworks-procurement/docs/procurement.md
+  - pedalworks-production/docs/production.md
+  - pedalworks-production/src/trailblazer.py
+  reference_key_facts:
+  - Forks Co supplies the Suspension Fork
+  - the Trail Blazer swaps in the Suspension Fork instead of the Drivetrain and Brake
+    Set
+  - Trail Blazer stage builds the Trail Blazer on the Assembly Floor
+  format_probe: false
+- id: u-retail-price
+  tier: low_level
+  answerable: false
+  question: What retail price does PedalWorks charge a customer for a City Cruiser?
+  expected_sources: []
+  reference_key_facts: []
+  format_probe: false
+  notes: The corpus only records internal costs (supplier unit_cost, and labor/scrap/freight
+    postings to the Ledger); no customer-facing sale price is ever stated anywhere
+    in docs/, src/, or the binary fixtures. Tests refusal.
+- id: u-warranty-policy
+  tier: low_level
+  answerable: false
+  question: What is PedalWorks' warranty policy for a Trail Blazer sold to a customer?
+  expected_sources: []
+  reference_key_facts: []
+  format_probe: false
+  notes: Warranty/customer-policy content is out of scope -- the corpus covers internal
+    factory operations (planning, supply, inventory, production, fulfillment, finance)
+    only, with no such content anywhere. Tests refusal.
+- id: hl-quality-rework
+  tier: high_level
+  answerable: true
+  persona: Quality Lead
+  question: Explain how PedalWorks handles a bicycle that fails inspection.
+  expected_sources:
+  - pedalworks-production/docs/production.md
+  - pedalworks-finance/docs/finance.md
+  reference_key_facts:
+  - a unit that fails Quality is sent back to Assembly for rework rather than scrapped
+  - Assembly re-posts a Labor Cost for the rework
+  - Quality re-inspects the reworked unit
+  - Quality posts a Scrap Cost for each inspection to the Ledger
+  format_probe: false
+- id: hl-inventory-reorder
+  tier: high_level
+  answerable: true
+  persona: Inventory Manager
+  question: Walk me through how PedalWorks keeps parts in stock and decides when to
+    reorder.
+  expected_sources:
+  - pedalworks-warehouse/docs/inventory.md
+  - pedalworks-order-planning/docs/planning_and_demand.md
+  - pedalworks-procurement/docs/procurement.md
+  reference_key_facts:
+  - Stock Tracking monitors PartsDB for stock levels
+  - the Planner reads PartsDB and detects when a part has run low
+  - the Planner triggers Procurement to reorder from the part's supplier
+  format_probe: false
+- id: mh-trailblazer-fork-region
+  tier: multi_hop
+  answerable: true
+  hops: 3
+  chain: Trail Blazer --uses--> Suspension Fork <--supplies-- Forks Co --region-->
+    North-East
+  question: The Trail Blazer uses a fork. Which supplier provides that fork, and which
+    region is that supplier based in?
+  expected_sources:
+  - pedalworks-production/docs/production.md
+  - pedalworks-procurement/docs/procurement.md
+  - pedalworks-procurement/docs/supplier_catalog.pdf
+  reference_key_facts:
+  - the Trail Blazer uses the Suspension Fork
+  - Forks Co supplies the Suspension Fork
+  - Forks Co is based in the North-East region
+  format_probe: false
+  notes: 'Cross-format hard-band chain: model->part->supplier from prose, supplier->region
+    from the PDF embedded image (recovered by the vision extractor).'
+- id: mh-suspensionfork-stock-to-supplier
+  tier: multi_hop
+  answerable: true
+  hops: 2
+  chain: Suspension Fork Stock --tracks--> Suspension Fork <--supplies-- Forks Co
+  question: The inventory spreadsheet tracks a low Suspension Fork stock. When the
+    Planner reorders it, which supplier receives the order?
+  expected_sources:
+  - pedalworks-warehouse/data/inventory_stock.xlsx
+  - pedalworks-procurement/docs/procurement.md
+  reference_key_facts:
+  - the Suspension Fork Stock row tracks the Suspension Fork
+  - Forks Co supplies the Suspension Fork, so Procurement orders from Forks Co
+  format_probe: false
+  notes: 'Cross-format chain: xlsx stock row -> part -> supplier (prose).'
+- id: u-delivery-time
+  tier: low_level
+  answerable: false
+  question: How long does PedalWorks take to deliver a finished bicycle to a customer's
+    home address?
+  expected_sources: []
+  reference_key_facts: []
+  format_probe: false
+  notes: 'Plausible-but-absent: the corpus covers internal fulfillment (Shipping out
+    of the South Distribution Center) but never a customer delivery time/SLA. Tests
+    refusal.'
+- id: u-assembly-headcount
+  tier: low_level
+  answerable: false
+  question: How many workers does PedalWorks employ on the Assembly floor?
+  expected_sources: []
+  reference_key_facts: []
+  format_probe: false
+  notes: 'Plausible-but-absent: the corpus describes Assembly as a process with build
+    steps and labor cost, but never any headcount/staffing figure anywhere. Tests
+    refusal.'

@@ -1,0 +1,38 @@
+questions:
+- id: ll-low-stock-threshold
+  tier: low_level
+  answerable: true
+  question: What numeric stock threshold does the Planner use to decide a part needs
+    reordering, and which file defines that value?
+  expected_sources:
+  - pedalworks-order-planning/src/planner.py
+  reference_key_facts:
+  - the threshold value is 1
+  - defined as _LOW_STOCK_THRESHOLD in src/planner.py
+  format_probe: false
+  notes: docs/inventory.md and docs/planning_and_demand.md only describe the low-stock
+    rule in prose without a number; the actual value lives only in src/planner.py,
+    so this is a provenance question.
+- id: ll-orderdb-readers-writers
+  tier: low_level
+  answerable: true
+  question: Which stage reads OrderDB to find open orders, and which stage updates
+    it when an order ships?
+  expected_sources:
+  - pedalworks-order-planning/docs/data-model-orderdb.md
+  reference_key_facts:
+  - the Planner reads OrderDB to find open orders
+  - Shipping updates OrderDB when an order is marked shipped
+  format_probe: false
+- id: fp-pptx-warehouse-capacity
+  tier: low_level
+  answerable: true
+  question: According to the factory overview slides, what is the stated capacity
+    of the North Intake Warehouse?
+  expected_sources:
+  - pedalworks-order-planning/docs/factory_overview.pptx
+  reference_key_facts:
+  - 3000 units
+  format_probe: true
+  notes: 'PPTX-only: facility capacity figures live only inside docs/factory_overview.pptx
+    slides; no prose doc states them.'

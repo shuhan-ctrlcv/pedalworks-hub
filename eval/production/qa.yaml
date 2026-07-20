@@ -1,0 +1,156 @@
+questions:
+- id: ll-first-article-inspection
+  tier: low_level
+  answerable: true
+  question: What happens to the very first bicycle inspected in a PedalWorks production
+    run?
+  expected_sources:
+  - pedalworks-production/src/quality.py
+  reference_key_facts:
+  - it gets a first-article inspection
+  - it always fails
+  - it returns to Assembly for rework and is inspected again
+  format_probe: false
+  notes: docs/production.md describes the general rework loop but never states that
+    the first unit always fails; that specific rule is only in src/quality.py's docstring
+    and its `_inspected == 1` code path.
+- id: mh-rework-to-ledger
+  tier: multi_hop
+  answerable: true
+  hops: 2
+  chain: Quality --reworks_to--> Assembly --posts--> Ledger
+  question: When a unit fails Quality and is sent back for rework, how does that eventually
+    show up in the Ledger?
+  expected_sources:
+  - pedalworks-production/docs/production.md
+  reference_key_facts:
+  - a unit that fails Quality returns to Assembly for rework rather than being scrapped
+  - Assembly re-posts a labor cost for the extra work before Quality inspects it again
+  format_probe: false
+- id: mh-citycruiser-frame-material
+  tier: multi_hop
+  answerable: true
+  hops: 2
+  chain: City Cruiser --uses--> Frame --made_of--> Aluminium
+  question: What material is the Frame of a City Cruiser made of?
+  expected_sources:
+  - pedalworks-production/docs/production.md
+  - pedalworks-production/docs/bom.md
+  reference_key_facts:
+  - the City Cruiser is built from a Frame
+  - the Frame is made of Aluminium
+  format_probe: false
+- id: fp-docx-braketest-standard
+  tier: low_level
+  answerable: true
+  question: In the quality checklist document's table, what standard and pass threshold
+    does the Brake Test check against?
+  expected_sources:
+  - pedalworks-production/docs/quality_checklist.docx
+  reference_key_facts:
+  - Lever force test standard
+  - Holds at 800 N, no pad slip
+  format_probe: true
+  notes: The QC-check standard and pass threshold exist only inside the docx table;
+    docs/production.md says the checks are 'documented separately in the QC checklist'
+    but never states an individual standard or threshold.
+- id: ll-suspensionfork-material
+  tier: low_level
+  answerable: true
+  question: What material is the Suspension Fork made of?
+  expected_sources:
+  - pedalworks-production/docs/bom.md
+  reference_key_facts:
+  - the Suspension Fork is made of Carbon Fibre
+  format_probe: false
+- id: ll-wheelset-subparts
+  tier: low_level
+  answerable: true
+  question: What are the sub-parts that make up a Wheelset?
+  expected_sources:
+  - pedalworks-production/docs/bom.md
+  reference_key_facts:
+  - a Wheelset is made up of Rims, Spokes, a Hub, and Tyres
+  format_probe: false
+- id: ll-drivetrain-subparts
+  tier: low_level
+  answerable: true
+  question: List the sub-parts of the Drivetrain.
+  expected_sources:
+  - pedalworks-production/docs/bom.md
+  reference_key_facts:
+  - the Drivetrain's sub-parts are the Chain, Cassette, Crankset, and Derailleur
+  format_probe: false
+- id: ll-build-step-after-mountframe
+  tier: low_level
+  answerable: true
+  question: In the Assembly build sequence, which step immediately follows Mount Frame?
+  expected_sources:
+  - pedalworks-production/docs/production.md
+  reference_key_facts:
+  - Attach Wheelset immediately follows Mount Frame
+  - the full order is Mount Frame -> Attach Wheelset -> Install Drivetrain -> Fit
+    Brakes -> Final Fit
+  format_probe: false
+- id: ll-trailblazer-parts
+  tier: low_level
+  answerable: true
+  question: Which parts is the Trail Blazer built from?
+  expected_sources:
+  - pedalworks-production/docs/production.md
+  reference_key_facts:
+  - the Trail Blazer is built from a Frame, a Wheelset, and a Suspension Fork
+  format_probe: false
+- id: ll-trailblazer-floor-code
+  tier: low_level
+  answerable: true
+  question: According to the source code, on which floor does the Trail Blazer stage
+    build the Trail Blazer?
+  expected_sources:
+  - pedalworks-production/src/trailblazer.py
+  reference_key_facts:
+  - the Trail Blazer is built on the Assembly Floor
+  format_probe: false
+  notes: 'Code-provenance split: the ''Assembly Floor'' location string lives in src/trailblazer.py,
+    not in prose.'
+- id: fp-notebook-first-pass-yield
+  tier: low_level
+  answerable: true
+  question: In the yield analysis notebook, what first-pass yield does PedalWorks
+    compute?
+  expected_sources:
+  - pedalworks-production/analysis/yield_analysis.ipynb
+  reference_key_facts:
+  - 98.0%
+  format_probe: true
+  notes: 'Notebook-only: First-Pass Yield is derived and stated only in analysis/yield_analysis.ipynb;
+    exercises the notebook preprocessing lane.'
+- id: hl-bom-overview
+  tier: high_level
+  answerable: true
+  persona: Design Engineer
+  question: 'Give me a bill-of-materials overview: what are the five parts and the
+    material each is made of?'
+  expected_sources:
+  - pedalworks-production/docs/bom.md
+  reference_key_facts:
+  - Frame is made of Aluminium
+  - Wheelset is made of Alloy
+  - Drivetrain is made of Steel
+  - Brake Set is made of Steel & Rubber
+  - Suspension Fork is made of Carbon Fibre
+  format_probe: false
+- id: mh-brakeset-material-via-citycruiser
+  tier: multi_hop
+  answerable: true
+  hops: 2
+  chain: City Cruiser --uses--> Brake Set --made_of--> Steel & Rubber
+  question: The City Cruiser uses a Brake Set. What material is that Brake Set made
+    of?
+  expected_sources:
+  - pedalworks-production/docs/production.md
+  - pedalworks-production/docs/bom.md
+  reference_key_facts:
+  - the City Cruiser uses a Brake Set
+  - the Brake Set is made of Steel & Rubber
+  format_probe: false

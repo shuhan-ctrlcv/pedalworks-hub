@@ -1,0 +1,30 @@
+questions:
+- id: ll-ledgerentry-fields
+  tier: low_level
+  answerable: true
+  question: Which file defines the LedgerEntry dataclass, and what are its three fields?
+  expected_sources:
+  - pedalworks-finance/src/models.py
+  reference_key_facts:
+  - src/models.py defines LedgerEntry
+  - fields are stage, kind, and amount
+  format_probe: false
+- id: ll-scrap-cost-stage
+  tier: low_level
+  answerable: true
+  question: Which stage posts the Scrap Cost, and where does it post it?
+  expected_sources:
+  - pedalworks-finance/docs/finance.md
+  reference_key_facts:
+  - Quality posts the Scrap Cost
+  - it posts to the Ledger
+  format_probe: false
+- id: ll-purchase-ledger-entry-kind
+  tier: low_level
+  answerable: true
+  question: What kind of cost does a Purchase Ledger Entry record?
+  expected_sources:
+  - pedalworks-finance/docs/finance.md
+  reference_key_facts:
+  - a Purchase Ledger Entry is of kind Purchase Cost
+  format_probe: false

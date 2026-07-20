@@ -1,0 +1,54 @@
+questions:
+- id: ll-frame-supplier
+  tier: low_level
+  answerable: true
+  question: Which supplier provides the Frame, and what is its lead time and unit
+    cost?
+  expected_sources:
+  - pedalworks-procurement/docs/procurement.md
+  reference_key_facts:
+  - Frames Ltd supplies the Frame
+  - 14 day lead time
+  - $120 unit cost
+  format_probe: false
+- id: ll-suspensionfork-supplier
+  tier: low_level
+  answerable: true
+  question: Which supplier provides the Suspension Fork, and what is its lead time
+    and unit cost?
+  expected_sources:
+  - pedalworks-procurement/docs/procurement.md
+  reference_key_facts:
+  - Forks Co supplies the Suspension Fork
+  - 12 day lead time
+  - $150 unit cost, the most expensive single part PedalWorks buys
+  format_probe: false
+- id: fp-pdf-forks-region
+  tier: low_level
+  answerable: true
+  question: According to the supplier catalog document, what region is Forks Co based
+    in?
+  expected_sources:
+  - pedalworks-procurement/docs/supplier_catalog.pdf
+  reference_key_facts:
+  - Forks Co is based in the North-East region
+  format_probe: true
+  notes: 'Image-only fact: Forks Co''s region is stated only inside a PIL-drawn ''Supplier
+    Region Note'' image embedded in the PDF (kb-test-tooling/gen_binary_fixtures.py
+    REGION_FACT_VALUE); docs/procurement.md gives every other supplier''s region in
+    prose but omits Forks Co''s on purpose. Recoverable now via the vision-description
+    step the extractor runs over embedded images, so this is answerable.'
+- id: hl-supply-chain-map
+  tier: high_level
+  answerable: true
+  persona: Procurement Lead
+  question: 'Summarize PedalWorks'' supply chain: which supplier provides which part?'
+  expected_sources:
+  - pedalworks-procurement/docs/procurement.md
+  reference_key_facts:
+  - Frames Ltd supplies the Frame
+  - Wheels Co supplies the Wheelset
+  - Drivetrain Co supplies the Drivetrain
+  - Brakes Ltd supplies the Brake Set
+  - Forks Co supplies the Suspension Fork
+  format_probe: false
