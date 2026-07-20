@@ -7,6 +7,7 @@ is the ground truth used to check what gets extracted from them.
 ## What's here
 
 ```
+CONCEPTS.md          start here — what the hub is + the tier system (and why)
 SCHEMA.md            the data model (structure.yaml / qa.yaml fields, rules)
 UPDATE-GUIDE.md       how to add content, add a new area, or re-home an entity
 repo-manifest.yaml    the 6 content repos + pinned commit shas
@@ -41,6 +42,6 @@ counterpart.
   cd pedalworks-hub && PYTHONPATH=. python3 -m tooling.multirepo.verify
   ```
 
-- **New to PedalWorks?** See `docs/onboarding.html` for a colleague-facing
-  walkthrough, or `../README.md` (the umbrella index) for how this repo
-  relates to the 6 content repos.
+- **New to PedalWorks?** Start with `CONCEPTS.md` (what the hub is + the tier
+  system), or `../README.md` (the umbrella index) for how this repo relates to
+  the 6 content repos.

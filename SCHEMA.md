@@ -39,6 +39,44 @@ edges:
 
 `0` (theme root), `1`, `2`.
 
+## The tier system — what it is and why
+
+Every entity carries a `tier` (0, 1, or 2) and every edge carries the tier it
+lives at. Tiers are a **containment hierarchy of increasing detail**, linked by
+`parent`:
+
+- **Tier 0** — the six super-theme nodes (one per area): the top-level map of
+  the company (Supply, Production, Finance, …).
+- **Tier 1** — the main sub-nodes inside a theme (a named supplier, a product
+  line, a data system).
+- **Tier 2** — the fine-grained detail under a tier-1 node (one supplier's lead
+  time, one product's bill of materials, one build step).
+
+`parent` links each node to the one above it, so the graph is a tier-0 → tier-1
+→ tier-2 tree (plus a few deliberate cross-branch edges — see the ownership
+rules below).
+
+We organise the ground truth this way for **two reasons**:
+
+**1. To judge / visualise the graph at different levels of detail.** Because
+every node and edge is tagged with its tier, the *same* ground truth renders at
+any depth:
+- a **Tier-0 visualisation** is the high-level map — just the six themes and how
+  they connect;
+- a **Tier-2 visualisation** is the full, most-detailed knowledge graph.
+This lets extraction be checked at any zoom level — from "does the pipeline get
+the Tier-0 shape right?" up to "does it recover the complete Tier-2 graph?"
+
+**2. To make additions easy and predictable.** The tier a fact belongs to tells
+you exactly where it goes:
+- a whole new **general section** → a new **Tier-0** node (a new area folder +
+  repo; see `UPDATE-GUIDE.md` Path B) — nothing existing changes;
+- **more detail about something that already exists** → a new **Tier-1 / Tier-2**
+  node under the relevant parent Tier-0 node, in that parent's area file
+  (`UPDATE-GUIDE.md` Path A).
+So "where does this new information go?" always has a clear answer: pick the
+tier, then the owning area.
+
 ## `qa.yaml` (per area, and `_cross_source`)
 
 ```yaml
