@@ -1,8 +1,8 @@
 generated: "2026-07-20"
 repos:
-  - {name: pedalworks-order-planning, sha: TBD-after-push}
-  - {name: pedalworks-procurement,    sha: TBD-after-push}
-  - {name: pedalworks-warehouse,      sha: TBD-after-push}
-  - {name: pedalworks-production,      sha: TBD-after-push}
-  - {name: pedalworks-shipping,       sha: TBD-after-push}
-  - {name: pedalworks-finance,        sha: TBD-after-push}
+  - {name: pedalworks-order-planning, sha: a8176d97b9339c19b5ccbe9ef1d4259836399727}
+  - {name: pedalworks-procurement,    sha: c0dfa0b3c052b1d8c90a263ce0878427e5af4d2a}
+  - {name: pedalworks-warehouse,      sha: 351d6a48f06030ca2e4c72c875ce5348ab8721d3}
+  - {name: pedalworks-production,      sha: 1ef82d457e47fda39bc466f198dd9cab18649f89}
+  - {name: pedalworks-shipping,       sha: cec3d9ec06be9acd307d6a635c6c0e4a4742f6f9}
+  - {name: pedalworks-finance,        sha: db576d1becdeb09c2408563cca4fd02b7cff6c72}
