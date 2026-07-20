@@ -1,0 +1,8 @@
+generated: "2026-07-20"
+repos:
+  - {name: pedalworks-order-planning, sha: TBD-after-push}
+  - {name: pedalworks-procurement,    sha: TBD-after-push}
+  - {name: pedalworks-warehouse,      sha: TBD-after-push}
+  - {name: pedalworks-production,      sha: TBD-after-push}
+  - {name: pedalworks-shipping,       sha: TBD-after-push}
+  - {name: pedalworks-finance,        sha: TBD-after-push}

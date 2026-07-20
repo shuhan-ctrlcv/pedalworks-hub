@@ -70,3 +70,41 @@ leaves out — `docs/procurement.md` and `docs/bom.md` for Supply,
 Fulfillment, and `docs/finance.md` for Finance. `docs/data-model.md` covers
 the systems (`OrderDB`, `PartsDB`, `LedgerDB`) that those themes read and
 write.
+
+## Cross-source edges
+
+The 30 edges below are the machine-checked cross-source edges from
+`eval/_cross_source/structure.yaml` — every edge whose two endpoints are
+owned by different areas, regardless of tier. This list is generated, not
+hand-maintained; regenerate from `eval/_cross_source/structure.yaml`.
+
+- Planning & Demand --reorders--> Supply (tier 0)
+- Planning & Demand --plans--> Production (tier 0)
+- Planning & Demand --reads_stock--> Inventory (tier 0)
+- Supply --posts_cost--> Finance (tier 0)
+- Production --posts_cost--> Finance (tier 0)
+- Fulfillment --posts_cost--> Finance (tier 0)
+- Fulfillment --reports_shipped--> Planning & Demand (tier 0)
+- Planner --reads_stock--> PartsDB (tier 1)
+- Planner --plans_build--> Assembly (tier 1)
+- Planner --reorders--> Procurement (tier 1)
+- City Cruiser Order --fulfilled_by--> City Cruiser Shipment (tier 2)
+- Trail Blazer Order --fulfilled_by--> Trail Blazer Shipment (tier 2)
+- Frame Stock --tracks--> Frame (tier 2)
+- Wheelset Stock --tracks--> Wheelset (tier 2)
+- Drivetrain Stock --tracks--> Drivetrain (tier 2)
+- Brake Set Stock --tracks--> Brake Set (tier 2)
+- Suspension Fork Stock --tracks--> Suspension Fork (tier 2)
+- City Cruiser --uses--> Frame (tier 2)
+- City Cruiser --uses--> Wheelset (tier 2)
+- City Cruiser --uses--> Drivetrain (tier 2)
+- City Cruiser --uses--> Brake Set (tier 2)
+- Trail Blazer --uses--> Frame (tier 2)
+- Trail Blazer --uses--> Wheelset (tier 2)
+- Trail Blazer --uses--> Suspension Fork (tier 2)
+- City Cruiser Shipment --ships--> City Cruiser (tier 2)
+- Trail Blazer Shipment --ships--> Trail Blazer (tier 2)
+- Procurement --posts--> Purchase Cost (tier 2)
+- Assembly --posts--> Labor Cost (tier 2)
+- Quality --posts--> Scrap Cost (tier 2)
+- Shipping --posts--> Freight Cost (tier 2)
