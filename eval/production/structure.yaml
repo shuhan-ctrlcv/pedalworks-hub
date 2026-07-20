@@ -1,0 +1,128 @@
+entities:
+- name: Production
+  kind: theme
+  tier: 0
+  parent: null
+- name: Assembly
+  kind: process
+  tier: 1
+  parent: Production
+- name: Quality
+  kind: process
+  tier: 1
+  parent: Production
+  aliases:
+  - Quality Control
+  - QC
+- name: Products
+  kind: group
+  tier: 1
+  parent: Production
+- name: Mount Frame
+  kind: build_step
+  tier: 2
+  parent: Assembly
+  attrs:
+    step_number: 1
+- name: Attach Wheelset
+  kind: build_step
+  tier: 2
+  parent: Assembly
+  attrs:
+    step_number: 2
+- name: Install Drivetrain
+  kind: build_step
+  tier: 2
+  parent: Assembly
+  attrs:
+    step_number: 3
+- name: Fit Brakes
+  kind: build_step
+  tier: 2
+  parent: Assembly
+  attrs:
+    step_number: 4
+- name: Final Fit
+  kind: build_step
+  tier: 2
+  parent: Assembly
+  attrs:
+    step_number: 5
+- name: First-Article Inspection
+  kind: qc_check
+  tier: 2
+  parent: Quality
+  attrs:
+    step_number: 1
+    result_rule: first unit always fails
+- name: Weld Test
+  kind: qc_check
+  tier: 2
+  parent: Quality
+  attrs:
+    step_number: 2
+- name: Brake Test
+  kind: qc_check
+  tier: 2
+  parent: Quality
+  attrs:
+    step_number: 3
+- name: Wheel-Alignment Check
+  kind: qc_check
+  tier: 2
+  parent: Quality
+  attrs:
+    step_number: 4
+- name: City Cruiser
+  kind: model
+  tier: 2
+  parent: Products
+- name: Trail Blazer
+  kind: model
+  tier: 2
+  parent: Products
+- name: First-Pass Yield
+  kind: concept
+  tier: 2
+  parent: Quality
+  attrs:
+    units_per_run: 50 units
+    first_article_failures: 1 unit
+    first_pass_yield: 98.0%
+edges:
+- from: Assembly
+  type: feeds
+  to: Quality
+  tier: 1
+- from: Quality
+  type: reworks_to
+  to: Assembly
+  tier: 1
+- from: Mount Frame
+  type: next
+  to: Attach Wheelset
+  tier: 2
+- from: Attach Wheelset
+  type: next
+  to: Install Drivetrain
+  tier: 2
+- from: Install Drivetrain
+  type: next
+  to: Fit Brakes
+  tier: 2
+- from: Fit Brakes
+  type: next
+  to: Final Fit
+  tier: 2
+- from: First-Article Inspection
+  type: next
+  to: Weld Test
+  tier: 2
+- from: Weld Test
+  type: next
+  to: Brake Test
+  tier: 2
+- from: Brake Test
+  type: next
+  to: Wheel-Alignment Check
+  tier: 2

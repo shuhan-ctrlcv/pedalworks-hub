@@ -1,0 +1,74 @@
+entities:
+- name: Inventory
+  kind: theme
+  tier: 0
+  parent: null
+- name: North Intake Warehouse
+  kind: location
+  tier: 1
+  parent: Inventory
+- name: PartsDB
+  kind: system
+  tier: 1
+  parent: Inventory
+- name: Stock Tracking
+  kind: sensor
+  tier: 1
+  parent: Inventory
+  attrs:
+    low_stock_rule: on-hand at or below the reorder point
+- name: Warehouse Capacity
+  kind: capacity_spec
+  tier: 2
+  parent: North Intake Warehouse
+  attrs:
+    value: 3000 units
+- name: Goods-Receipt Log
+  kind: log
+  tier: 2
+  parent: North Intake Warehouse
+- name: Frame Stock
+  kind: stock_record
+  tier: 2
+  parent: PartsDB
+  attrs:
+    on_hand: 5
+    reorder: 3
+    safety: 2
+- name: Wheelset Stock
+  kind: stock_record
+  tier: 2
+  parent: PartsDB
+  attrs:
+    on_hand: 8
+    reorder: 4
+    safety: 2
+- name: Drivetrain Stock
+  kind: stock_record
+  tier: 2
+  parent: PartsDB
+  attrs:
+    on_hand: 6
+    reorder: 3
+    safety: 2
+- name: Brake Set Stock
+  kind: stock_record
+  tier: 2
+  parent: PartsDB
+  attrs:
+    on_hand: 10
+    reorder: 5
+    safety: 3
+- name: Suspension Fork Stock
+  kind: stock_record
+  tier: 2
+  parent: PartsDB
+  attrs:
+    on_hand: 4
+    reorder: 3
+    safety: 1
+edges:
+- from: Stock Tracking
+  type: monitors
+  to: PartsDB
+  tier: 1

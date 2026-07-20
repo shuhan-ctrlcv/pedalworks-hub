@@ -1,0 +1,42 @@
+entities:
+- name: Fulfillment
+  kind: theme
+  tier: 0
+  parent: null
+- name: South Distribution Center
+  kind: location
+  tier: 1
+  parent: Fulfillment
+- name: Shipping
+  kind: process
+  tier: 1
+  parent: Fulfillment
+- name: DC Capacity
+  kind: capacity_spec
+  tier: 2
+  parent: South Distribution Center
+  attrs:
+    value: 1500 units
+- name: Staging Area
+  kind: area
+  tier: 2
+  parent: South Distribution Center
+- name: City Cruiser Shipment
+  kind: shipment_record
+  tier: 2
+  parent: Shipping
+  attrs:
+    carrier: Northline Freight
+    freight: $25
+    ship_date: '2026-02-10'
+    delivery_status: Delivered
+- name: Trail Blazer Shipment
+  kind: shipment_record
+  tier: 2
+  parent: Shipping
+  attrs:
+    carrier: Cascade Logistics
+    freight: $30
+    ship_date: '2026-02-14'
+    delivery_status: In Transit
+edges: []

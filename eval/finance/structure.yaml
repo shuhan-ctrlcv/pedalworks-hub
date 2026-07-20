@@ -1,0 +1,90 @@
+entities:
+- name: Finance
+  kind: theme
+  tier: 0
+  parent: null
+- name: Ledger
+  kind: running_total
+  tier: 1
+  parent: Finance
+- name: LedgerDB
+  kind: system
+  tier: 1
+  parent: Finance
+- name: Purchase Cost
+  kind: cost_kind
+  tier: 2
+  parent: Ledger
+  attrs:
+    source: Procurement
+- name: Labor Cost
+  kind: cost_kind
+  tier: 2
+  parent: Ledger
+  attrs:
+    source: Assembly
+- name: Scrap Cost
+  kind: cost_kind
+  tier: 2
+  parent: Ledger
+  attrs:
+    source: Quality
+- name: Freight Cost
+  kind: cost_kind
+  tier: 2
+  parent: Ledger
+  attrs:
+    source: Shipping
+- name: Purchase Ledger Entry
+  kind: ledger_entry
+  tier: 2
+  parent: Ledger
+  attrs:
+    stage: Supply
+    kind: Purchase Cost
+    amount: $120
+- name: Labor Ledger Entry
+  kind: ledger_entry
+  tier: 2
+  parent: Ledger
+  attrs:
+    stage: Production
+    kind: Labor Cost
+    amount: $45
+- name: Scrap Ledger Entry
+  kind: ledger_entry
+  tier: 2
+  parent: Ledger
+  attrs:
+    stage: Production
+    kind: Scrap Cost
+    amount: $10
+- name: Freight Ledger Entry
+  kind: ledger_entry
+  tier: 2
+  parent: Ledger
+  attrs:
+    stage: Fulfillment
+    kind: Freight Cost
+    amount: $25
+edges:
+- from: Ledger
+  type: stores
+  to: LedgerDB
+  tier: 1
+- from: Purchase Ledger Entry
+  type: of_kind
+  to: Purchase Cost
+  tier: 2
+- from: Labor Ledger Entry
+  type: of_kind
+  to: Labor Cost
+  tier: 2
+- from: Scrap Ledger Entry
+  type: of_kind
+  to: Scrap Cost
+  tier: 2
+- from: Freight Ledger Entry
+  type: of_kind
+  to: Freight Cost
+  tier: 2

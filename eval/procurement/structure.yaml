@@ -1,0 +1,306 @@
+entities:
+- name: Supply
+  kind: theme
+  tier: 0
+  parent: null
+- name: Procurement
+  kind: process
+  tier: 1
+  parent: Supply
+- name: Frames Ltd
+  kind: supplier
+  tier: 1
+  parent: Supply
+  attrs:
+    region: North
+    lead_time: 14 days
+    unit_cost: $120
+- name: Wheels Co
+  kind: supplier
+  tier: 1
+  parent: Supply
+  attrs:
+    region: East
+    lead_time: 7 days
+    unit_cost: $85
+- name: Drivetrain Co
+  kind: supplier
+  tier: 1
+  parent: Supply
+  attrs:
+    region: West
+    lead_time: 10 days
+    unit_cost: $95
+- name: Brakes Ltd
+  kind: supplier
+  tier: 1
+  parent: Supply
+  attrs:
+    region: South
+    lead_time: 10 days
+    unit_cost: $40
+- name: Forks Co
+  kind: supplier
+  tier: 1
+  parent: Supply
+  attrs:
+    region: North-East
+    lead_time: 12 days
+    unit_cost: $150
+- name: Frame
+  kind: part
+  tier: 1
+  parent: Supply
+  attrs:
+    material: Aluminium
+    lead_time: 14 days
+    unit_cost: $120
+- name: Wheelset
+  kind: part
+  tier: 1
+  parent: Supply
+  attrs:
+    material: Alloy
+    lead_time: 7 days
+    unit_cost: $85
+- name: Drivetrain
+  kind: part
+  tier: 1
+  parent: Supply
+  attrs:
+    material: Steel
+    lead_time: 10 days
+    unit_cost: $95
+- name: Brake Set
+  kind: part
+  tier: 1
+  parent: Supply
+  attrs:
+    material: Steel & Rubber
+    lead_time: 10 days
+    unit_cost: $40
+- name: Suspension Fork
+  kind: part
+  tier: 1
+  parent: Supply
+  attrs:
+    material: Carbon Fibre
+    lead_time: 12 days
+    unit_cost: $150
+- name: Aluminium
+  kind: material
+  tier: 2
+  parent: Frame
+- name: Main Tube Set
+  kind: subpart
+  tier: 2
+  parent: Frame
+- name: Head Tube
+  kind: subpart
+  tier: 2
+  parent: Frame
+- name: Welded Joints
+  kind: subpart
+  tier: 2
+  parent: Frame
+- name: Alloy
+  kind: material
+  tier: 2
+  parent: Wheelset
+- name: Rims
+  kind: subpart
+  tier: 2
+  parent: Wheelset
+- name: Spokes
+  kind: subpart
+  tier: 2
+  parent: Wheelset
+- name: Hub
+  kind: subpart
+  tier: 2
+  parent: Wheelset
+- name: Tyres
+  kind: subpart
+  tier: 2
+  parent: Wheelset
+- name: Steel
+  kind: material
+  tier: 2
+  parent: Drivetrain
+- name: Chain
+  kind: subpart
+  tier: 2
+  parent: Drivetrain
+- name: Cassette
+  kind: subpart
+  tier: 2
+  parent: Drivetrain
+- name: Crankset
+  kind: subpart
+  tier: 2
+  parent: Drivetrain
+- name: Derailleur
+  kind: subpart
+  tier: 2
+  parent: Drivetrain
+- name: Steel & Rubber
+  kind: material
+  tier: 2
+  parent: Brake Set
+- name: Calipers
+  kind: subpart
+  tier: 2
+  parent: Brake Set
+- name: Brake Pads
+  kind: subpart
+  tier: 2
+  parent: Brake Set
+- name: Levers
+  kind: subpart
+  tier: 2
+  parent: Brake Set
+- name: Carbon Fibre
+  kind: material
+  tier: 2
+  parent: Suspension Fork
+- name: Stanchions
+  kind: subpart
+  tier: 2
+  parent: Suspension Fork
+- name: Lowers
+  kind: subpart
+  tier: 2
+  parent: Suspension Fork
+- name: Spring/Damper
+  kind: subpart
+  tier: 2
+  parent: Suspension Fork
+edges:
+- from: Procurement
+  type: orders_from
+  to: Frames Ltd
+  tier: 1
+- from: Procurement
+  type: orders_from
+  to: Wheels Co
+  tier: 1
+- from: Procurement
+  type: orders_from
+  to: Drivetrain Co
+  tier: 1
+- from: Procurement
+  type: orders_from
+  to: Brakes Ltd
+  tier: 1
+- from: Procurement
+  type: orders_from
+  to: Forks Co
+  tier: 1
+- from: Frames Ltd
+  type: supplies
+  to: Frame
+  tier: 1
+- from: Wheels Co
+  type: supplies
+  to: Wheelset
+  tier: 1
+- from: Drivetrain Co
+  type: supplies
+  to: Drivetrain
+  tier: 1
+- from: Brakes Ltd
+  type: supplies
+  to: Brake Set
+  tier: 1
+- from: Forks Co
+  type: supplies
+  to: Suspension Fork
+  tier: 1
+- from: Frame
+  type: made_of
+  to: Aluminium
+  tier: 2
+- from: Frame
+  type: has_subpart
+  to: Main Tube Set
+  tier: 2
+- from: Frame
+  type: has_subpart
+  to: Head Tube
+  tier: 2
+- from: Frame
+  type: has_subpart
+  to: Welded Joints
+  tier: 2
+- from: Wheelset
+  type: made_of
+  to: Alloy
+  tier: 2
+- from: Wheelset
+  type: has_subpart
+  to: Rims
+  tier: 2
+- from: Wheelset
+  type: has_subpart
+  to: Spokes
+  tier: 2
+- from: Wheelset
+  type: has_subpart
+  to: Hub
+  tier: 2
+- from: Wheelset
+  type: has_subpart
+  to: Tyres
+  tier: 2
+- from: Drivetrain
+  type: made_of
+  to: Steel
+  tier: 2
+- from: Drivetrain
+  type: has_subpart
+  to: Chain
+  tier: 2
+- from: Drivetrain
+  type: has_subpart
+  to: Cassette
+  tier: 2
+- from: Drivetrain
+  type: has_subpart
+  to: Crankset
+  tier: 2
+- from: Drivetrain
+  type: has_subpart
+  to: Derailleur
+  tier: 2
+- from: Brake Set
+  type: made_of
+  to: Steel & Rubber
+  tier: 2
+- from: Brake Set
+  type: has_subpart
+  to: Calipers
+  tier: 2
+- from: Brake Set
+  type: has_subpart
+  to: Brake Pads
+  tier: 2
+- from: Brake Set
+  type: has_subpart
+  to: Levers
+  tier: 2
+- from: Suspension Fork
+  type: made_of
+  to: Carbon Fibre
+  tier: 2
+- from: Suspension Fork
+  type: has_subpart
+  to: Stanchions
+  tier: 2
+- from: Suspension Fork
+  type: has_subpart
+  to: Lowers
+  tier: 2
+- from: Suspension Fork
+  type: has_subpart
+  to: Spring/Damper
+  tier: 2

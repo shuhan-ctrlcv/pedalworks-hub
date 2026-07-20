@@ -1,0 +1,50 @@
+entities:
+- name: Planning & Demand
+  kind: theme
+  tier: 0
+  parent: null
+- name: OrderDB
+  kind: system
+  tier: 1
+  parent: Planning & Demand
+- name: Planner
+  kind: process
+  tier: 1
+  parent: Planning & Demand
+- name: Customer
+  kind: external_actor
+  tier: 1
+  parent: Planning & Demand
+- name: City Cruiser Order
+  kind: order_record
+  tier: 2
+  parent: OrderDB
+  attrs:
+    order_id: ORD-1042
+    model: City Cruiser
+    qty: 20
+    status: Shipped
+    date: '2026-02-01'
+- name: Trail Blazer Order
+  kind: order_record
+  tier: 2
+  parent: OrderDB
+  attrs:
+    order_id: ORD-1077
+    model: Trail Blazer
+    qty: 15
+    status: In Transit
+    date: '2026-02-05'
+edges:
+- from: Planner
+  type: reads
+  to: OrderDB
+  tier: 1
+- from: Customer
+  type: places
+  to: City Cruiser Order
+  tier: 2
+- from: Customer
+  type: places
+  to: Trail Blazer Order
+  tier: 2

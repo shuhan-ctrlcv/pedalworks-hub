@@ -1,0 +1,122 @@
+entities: []
+edges:
+- from: Planning & Demand
+  type: reorders
+  to: Supply
+  tier: 0
+- from: Planning & Demand
+  type: plans
+  to: Production
+  tier: 0
+- from: Planning & Demand
+  type: reads_stock
+  to: Inventory
+  tier: 0
+- from: Supply
+  type: posts_cost
+  to: Finance
+  tier: 0
+- from: Production
+  type: posts_cost
+  to: Finance
+  tier: 0
+- from: Fulfillment
+  type: posts_cost
+  to: Finance
+  tier: 0
+- from: Fulfillment
+  type: reports_shipped
+  to: Planning & Demand
+  tier: 0
+- from: Planner
+  type: reads_stock
+  to: PartsDB
+  tier: 1
+- from: Planner
+  type: plans_build
+  to: Assembly
+  tier: 1
+- from: Planner
+  type: reorders
+  to: Procurement
+  tier: 1
+- from: City Cruiser Order
+  type: fulfilled_by
+  to: City Cruiser Shipment
+  tier: 2
+- from: Trail Blazer Order
+  type: fulfilled_by
+  to: Trail Blazer Shipment
+  tier: 2
+- from: Frame Stock
+  type: tracks
+  to: Frame
+  tier: 2
+- from: Wheelset Stock
+  type: tracks
+  to: Wheelset
+  tier: 2
+- from: Drivetrain Stock
+  type: tracks
+  to: Drivetrain
+  tier: 2
+- from: Brake Set Stock
+  type: tracks
+  to: Brake Set
+  tier: 2
+- from: Suspension Fork Stock
+  type: tracks
+  to: Suspension Fork
+  tier: 2
+- from: City Cruiser
+  type: uses
+  to: Frame
+  tier: 2
+- from: City Cruiser
+  type: uses
+  to: Wheelset
+  tier: 2
+- from: City Cruiser
+  type: uses
+  to: Drivetrain
+  tier: 2
+- from: City Cruiser
+  type: uses
+  to: Brake Set
+  tier: 2
+- from: Trail Blazer
+  type: uses
+  to: Frame
+  tier: 2
+- from: Trail Blazer
+  type: uses
+  to: Wheelset
+  tier: 2
+- from: Trail Blazer
+  type: uses
+  to: Suspension Fork
+  tier: 2
+- from: City Cruiser Shipment
+  type: ships
+  to: City Cruiser
+  tier: 2
+- from: Trail Blazer Shipment
+  type: ships
+  to: Trail Blazer
+  tier: 2
+- from: Procurement
+  type: posts
+  to: Purchase Cost
+  tier: 2
+- from: Assembly
+  type: posts
+  to: Labor Cost
+  tier: 2
+- from: Quality
+  type: posts
+  to: Scrap Cost
+  tier: 2
+- from: Shipping
+  type: posts
+  to: Freight Cost
+  tier: 2
