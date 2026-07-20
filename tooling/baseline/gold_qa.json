@@ -1,0 +1,649 @@
+{
+  "corpus_sha": "e39d9975c10b113983ee26da4382821c51084d73",
+  "questions": [
+    {
+      "id": "ll-frame-supplier",
+      "tier": "low_level",
+      "answerable": true,
+      "question": "Which supplier provides the Frame, and what is its lead time and unit cost?",
+      "expected_sources": [
+        "docs/procurement.md"
+      ],
+      "reference_key_facts": [
+        "Frames Ltd supplies the Frame",
+        "14 day lead time",
+        "$120 unit cost"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "ll-suspensionfork-supplier",
+      "tier": "low_level",
+      "answerable": true,
+      "question": "Which supplier provides the Suspension Fork, and what is its lead time and unit cost?",
+      "expected_sources": [
+        "docs/procurement.md"
+      ],
+      "reference_key_facts": [
+        "Forks Co supplies the Suspension Fork",
+        "12 day lead time",
+        "$150 unit cost, the most expensive single part PedalWorks buys"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "ll-low-stock-threshold",
+      "tier": "low_level",
+      "answerable": true,
+      "question": "What numeric stock threshold does the Planner use to decide a part needs reordering, and which file defines that value?",
+      "expected_sources": [
+        "src/planner.py"
+      ],
+      "reference_key_facts": [
+        "the threshold value is 1",
+        "defined as _LOW_STOCK_THRESHOLD in src/planner.py"
+      ],
+      "format_probe": false,
+      "notes": "docs/inventory.md and docs/planning_and_demand.md only describe the low-stock rule in prose without a number; the actual value lives only in src/planner.py, so this is a provenance question."
+    },
+    {
+      "id": "ll-ledgerentry-fields",
+      "tier": "low_level",
+      "answerable": true,
+      "question": "Which file defines the LedgerEntry dataclass, and what are its three fields?",
+      "expected_sources": [
+        "src/models.py"
+      ],
+      "reference_key_facts": [
+        "src/models.py defines LedgerEntry",
+        "fields are stage, kind, and amount"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "ll-first-article-inspection",
+      "tier": "low_level",
+      "answerable": true,
+      "question": "What happens to the very first bicycle inspected in a PedalWorks production run?",
+      "expected_sources": [
+        "src/quality.py"
+      ],
+      "reference_key_facts": [
+        "it gets a first-article inspection",
+        "it always fails",
+        "it returns to Assembly for rework and is inspected again"
+      ],
+      "format_probe": false,
+      "notes": "docs/production.md describes the general rework loop but never states that the first unit always fails; that specific rule is only in src/quality.py's docstring and its `_inspected == 1` code path."
+    },
+    {
+      "id": "hl-order-to-shipment",
+      "tier": "high_level",
+      "answerable": true,
+      "persona": "Ops Lead",
+      "question": "Walk me through what happens to one City Cruiser order, from supplier parts all the way to shipment.",
+      "expected_sources": [
+        "README.md",
+        "docs/planning_and_demand.md",
+        "docs/production.md",
+        "docs/fulfillment.md"
+      ],
+      "reference_key_facts": [
+        "the Planner triggers Procurement to reorder a part when PartsDB shows it low",
+        "Assembly builds the City Cruiser from a Frame, Wheelset, Drivetrain, and Brake Set",
+        "Quality inspects the unit and reworks failures via Assembly before re-inspecting",
+        "Shipping sends the finished bicycle out from the South Distribution Center and marks the order shipped in OrderDB"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "hl-two-hubs",
+      "tier": "high_level",
+      "answerable": true,
+      "persona": "New Engineer",
+      "question": "I'm new here -- can you explain PedalWorks' two 'hub' roles, the Planner and the Ledger, and how they differ?",
+      "expected_sources": [
+        "README.md",
+        "docs/finance.md"
+      ],
+      "reference_key_facts": [
+        "the Planner is the fan-out hub: it reads OrderDB and PartsDB, triggers Procurement on low stock, and releases work to Assembly",
+        "the Ledger is the fan-in hub: many processes each post one cost to it",
+        "the Ledger is persisted in LedgerDB"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "hl-money-trail",
+      "tier": "high_level",
+      "answerable": true,
+      "persona": "Finance Controller",
+      "question": "For accounting purposes, walk me through every point in the factory where money gets spent, from raw part purchase to final shipment.",
+      "expected_sources": [
+        "docs/procurement.md",
+        "docs/production.md",
+        "docs/fulfillment.md",
+        "docs/finance.md"
+      ],
+      "reference_key_facts": [
+        "Procurement posts a Purchase Cost each time it orders parts from a supplier",
+        "Assembly posts a Labor Cost each time it puts a unit together, and posts another Labor Cost each time it reworks a unit that failed Quality",
+        "Quality posts a Scrap Cost each time it runs an inspection, whether the unit passes or fails",
+        "Shipping posts a Freight Cost each time it ships a finished unit out",
+        "all four postings land in the shared Ledger, backed by LedgerDB"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "hl-city-cruiser-vs-trailblazer",
+      "tier": "high_level",
+      "answerable": true,
+      "persona": "Product Manager",
+      "question": "How does building a Trail Blazer differ from building a City Cruiser, from parts sourcing through assembly?",
+      "expected_sources": [
+        "docs/procurement.md",
+        "docs/production.md"
+      ],
+      "reference_key_facts": [
+        "the City Cruiser is built from four parts: a Frame, a Wheelset, a Drivetrain, and a Brake Set",
+        "the Trail Blazer shares two of those three -- the Frame and the Wheelset -- but swaps out the Drivetrain and Brake Set for a Suspension Fork instead",
+        "every City Cruiser and every Trail Blazer goes through the same five Assembly steps and the same Quality inspection"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "hl-three-systems",
+      "tier": "high_level",
+      "answerable": true,
+      "persona": "Data Analyst",
+      "question": "What are PedalWorks' three named data systems, and which stages read or write each one?",
+      "expected_sources": [
+        "docs/data-model.md"
+      ],
+      "reference_key_facts": [
+        "PartsDB holds part stock levels, read and written by Inventory, the Planner, and Procurement",
+        "OrderDB holds customer orders, read by the Planner to find open orders and updated by Shipping when an order is marked shipped",
+        "LedgerDB is the backing store for the Ledger, holding every posted LedgerEntry"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "mh-planner-to-ledger",
+      "tier": "multi_hop",
+      "answerable": true,
+      "hops": 2,
+      "chain": "Planner --reorders--> Procurement --posts--> Ledger",
+      "question": "Trace how the Planner noticing low stock eventually turns into an entry in the Ledger.",
+      "expected_sources": [
+        "docs/planning_and_demand.md",
+        "docs/procurement.md"
+      ],
+      "reference_key_facts": [
+        "the Planner triggers Procurement to place an order when a part's stock has run low",
+        "Procurement posts that purchase cost to the Ledger"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "mh-rework-to-ledger",
+      "tier": "multi_hop",
+      "answerable": true,
+      "hops": 2,
+      "chain": "Quality --reworks_to--> Assembly --posts--> Ledger",
+      "question": "When a unit fails Quality and is sent back for rework, how does that eventually show up in the Ledger?",
+      "expected_sources": [
+        "docs/production.md"
+      ],
+      "reference_key_facts": [
+        "a unit that fails Quality returns to Assembly for rework rather than being scrapped",
+        "Assembly re-posts a labor cost for the extra work before Quality inspects it again"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "mh-ledger-fanin-quality-shipping",
+      "tier": "multi_hop",
+      "answerable": true,
+      "hops": 2,
+      "chain": "Quality --posts--> Ledger <--posts-- Shipping",
+      "question": "Quality and Shipping are different stages, but they both feed the same downstream record. Which one, and what does each stage post to it?",
+      "expected_sources": [
+        "docs/production.md",
+        "docs/fulfillment.md",
+        "docs/finance.md"
+      ],
+      "reference_key_facts": [
+        "Quality posts a scrap cost to the Ledger",
+        "Shipping posts a freight cost to the Ledger",
+        "both postings converge in the same Ledger, backed by LedgerDB"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "mh-frame-supplier-to-trailblazer",
+      "tier": "multi_hop",
+      "answerable": true,
+      "hops": 2,
+      "chain": "Frames Ltd --supplies--> Frame --used_in--> Trail Blazer",
+      "question": "The Frame feeds into both PedalWorks bicycle models. Which supplier provides it, and which second model besides the City Cruiser uses it?",
+      "expected_sources": [
+        "docs/procurement.md",
+        "docs/production.md"
+      ],
+      "reference_key_facts": [
+        "Frames Ltd supplies the Frame",
+        "the Trail Blazer shares the Frame with the City Cruiser"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "mh-citycruiser-frame-material",
+      "tier": "multi_hop",
+      "answerable": true,
+      "hops": 2,
+      "chain": "City Cruiser --uses--> Frame --made_of--> Aluminium",
+      "question": "What material is the Frame of a City Cruiser made of?",
+      "expected_sources": [
+        "docs/production.md",
+        "docs/bom.md"
+      ],
+      "reference_key_facts": [
+        "the City Cruiser is built from a Frame",
+        "the Frame is made of Aluminium"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "mh-forks-to-assembly",
+      "tier": "multi_hop",
+      "answerable": true,
+      "hops": 3,
+      "chain": "Forks Co --supplies--> Suspension Fork --used_in--> Trail Blazer <--produces-- Assembly",
+      "question": "Trace the Suspension Fork from its supplier to the finished bicycle: who supplies it, which model uses it, and which stage produces that model?",
+      "expected_sources": [
+        "docs/procurement.md",
+        "docs/production.md",
+        "src/trailblazer.py"
+      ],
+      "reference_key_facts": [
+        "Forks Co supplies the Suspension Fork",
+        "the Trail Blazer swaps in the Suspension Fork instead of the Drivetrain and Brake Set",
+        "Trail Blazer stage builds the Trail Blazer on the Assembly Floor"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "fp-pdf-forks-region",
+      "tier": "low_level",
+      "answerable": true,
+      "question": "According to the supplier catalog document, what region is Forks Co based in?",
+      "expected_sources": [
+        "docs/supplier_catalog.pdf"
+      ],
+      "reference_key_facts": [
+        "Forks Co is based in the North-East region"
+      ],
+      "format_probe": true,
+      "notes": "Image-only fact: Forks Co's region is stated only inside a PIL-drawn 'Supplier Region Note' image embedded in the PDF (kb-test-tooling/gen_binary_fixtures.py REGION_FACT_VALUE); docs/procurement.md gives every other supplier's region in prose but omits Forks Co's on purpose. Recoverable now via the vision-description step the extractor runs over embedded images, so this is answerable."
+    },
+    {
+      "id": "fp-docx-braketest-standard",
+      "tier": "low_level",
+      "answerable": true,
+      "question": "In the quality checklist document's table, what standard and pass threshold does the Brake Test check against?",
+      "expected_sources": [
+        "docs/quality_checklist.docx"
+      ],
+      "reference_key_facts": [
+        "Lever force test standard",
+        "Holds at 800 N, no pad slip"
+      ],
+      "format_probe": true,
+      "notes": "The QC-check standard and pass threshold exist only inside the docx table; docs/production.md says the checks are 'documented separately in the QC checklist' but never states an individual standard or threshold."
+    },
+    {
+      "id": "fp-xlsx-suspensionfork-stock",
+      "tier": "low_level",
+      "answerable": true,
+      "question": "According to the inventory stock spreadsheet, how many units of the Suspension Fork are currently on hand, and what is its reorder threshold?",
+      "expected_sources": [
+        "data/inventory_stock.xlsx"
+      ],
+      "reference_key_facts": [
+        "4 units on hand",
+        "reorder threshold of 3"
+      ],
+      "format_probe": true,
+      "notes": "These figures exist only in the xlsx stock table; docs/inventory.md discusses stock tracking generically with no per-part numbers."
+    },
+    {
+      "id": "u-retail-price",
+      "tier": "low_level",
+      "answerable": false,
+      "question": "What retail price does PedalWorks charge a customer for a City Cruiser?",
+      "expected_sources": [],
+      "reference_key_facts": [],
+      "format_probe": false,
+      "notes": "The corpus only records internal costs (supplier unit_cost, and labor/scrap/freight postings to the Ledger); no customer-facing sale price is ever stated anywhere in docs/, src/, or the binary fixtures. Tests refusal."
+    },
+    {
+      "id": "u-warranty-policy",
+      "tier": "low_level",
+      "answerable": false,
+      "question": "What is PedalWorks' warranty policy for a Trail Blazer sold to a customer?",
+      "expected_sources": [],
+      "reference_key_facts": [],
+      "format_probe": false,
+      "notes": "Warranty/customer-policy content is out of scope -- the corpus covers internal factory operations (planning, supply, inventory, production, fulfillment, finance) only, with no such content anywhere. Tests refusal."
+    },
+    {
+      "id": "ll-suspensionfork-material",
+      "tier": "low_level",
+      "answerable": true,
+      "question": "What material is the Suspension Fork made of?",
+      "expected_sources": [
+        "docs/bom.md"
+      ],
+      "reference_key_facts": [
+        "the Suspension Fork is made of Carbon Fibre"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "ll-wheelset-subparts",
+      "tier": "low_level",
+      "answerable": true,
+      "question": "What are the sub-parts that make up a Wheelset?",
+      "expected_sources": [
+        "docs/bom.md"
+      ],
+      "reference_key_facts": [
+        "a Wheelset is made up of Rims, Spokes, a Hub, and Tyres"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "ll-drivetrain-subparts",
+      "tier": "low_level",
+      "answerable": true,
+      "question": "List the sub-parts of the Drivetrain.",
+      "expected_sources": [
+        "docs/bom.md"
+      ],
+      "reference_key_facts": [
+        "the Drivetrain's sub-parts are the Chain, Cassette, Crankset, and Derailleur"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "ll-build-step-after-mountframe",
+      "tier": "low_level",
+      "answerable": true,
+      "question": "In the Assembly build sequence, which step immediately follows Mount Frame?",
+      "expected_sources": [
+        "docs/production.md"
+      ],
+      "reference_key_facts": [
+        "Attach Wheelset immediately follows Mount Frame",
+        "the full order is Mount Frame -> Attach Wheelset -> Install Drivetrain -> Fit Brakes -> Final Fit"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "ll-scrap-cost-stage",
+      "tier": "low_level",
+      "answerable": true,
+      "question": "Which stage posts the Scrap Cost, and where does it post it?",
+      "expected_sources": [
+        "docs/finance.md"
+      ],
+      "reference_key_facts": [
+        "Quality posts the Scrap Cost",
+        "it posts to the Ledger"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "ll-purchase-ledger-entry-kind",
+      "tier": "low_level",
+      "answerable": true,
+      "question": "What kind of cost does a Purchase Ledger Entry record?",
+      "expected_sources": [
+        "docs/finance.md"
+      ],
+      "reference_key_facts": [
+        "a Purchase Ledger Entry is of kind Purchase Cost"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "ll-orderdb-readers-writers",
+      "tier": "low_level",
+      "answerable": true,
+      "question": "Which stage reads OrderDB to find open orders, and which stage updates it when an order ships?",
+      "expected_sources": [
+        "docs/data-model.md"
+      ],
+      "reference_key_facts": [
+        "the Planner reads OrderDB to find open orders",
+        "Shipping updates OrderDB when an order is marked shipped"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "ll-trailblazer-parts",
+      "tier": "low_level",
+      "answerable": true,
+      "question": "Which parts is the Trail Blazer built from?",
+      "expected_sources": [
+        "docs/production.md"
+      ],
+      "reference_key_facts": [
+        "the Trail Blazer is built from a Frame, a Wheelset, and a Suspension Fork"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "ll-shipping-location",
+      "tier": "low_level",
+      "answerable": true,
+      "question": "From which location does Shipping send finished bicycles out?",
+      "expected_sources": [
+        "docs/fulfillment.md"
+      ],
+      "reference_key_facts": [
+        "Shipping sends finished bicycles from the South Distribution Center"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "ll-trailblazer-floor-code",
+      "tier": "low_level",
+      "answerable": true,
+      "question": "According to the source code, on which floor does the Trail Blazer stage build the Trail Blazer?",
+      "expected_sources": [
+        "src/trailblazer.py"
+      ],
+      "reference_key_facts": [
+        "the Trail Blazer is built on the Assembly Floor"
+      ],
+      "format_probe": false,
+      "notes": "Code-provenance split: the 'Assembly Floor' location string lives in src/trailblazer.py, not in prose."
+    },
+    {
+      "id": "fp-pptx-warehouse-capacity",
+      "tier": "low_level",
+      "answerable": true,
+      "question": "According to the factory overview slides, what is the stated capacity of the North Intake Warehouse?",
+      "expected_sources": [
+        "docs/factory_overview.pptx"
+      ],
+      "reference_key_facts": [
+        "3000 units"
+      ],
+      "format_probe": true,
+      "notes": "PPTX-only: facility capacity figures live only inside docs/factory_overview.pptx slides; no prose doc states them."
+    },
+    {
+      "id": "fp-notebook-first-pass-yield",
+      "tier": "low_level",
+      "answerable": true,
+      "question": "In the yield analysis notebook, what first-pass yield does PedalWorks compute?",
+      "expected_sources": [
+        "analysis/yield_analysis.ipynb"
+      ],
+      "reference_key_facts": [
+        "98.0%"
+      ],
+      "format_probe": true,
+      "notes": "Notebook-only: First-Pass Yield is derived and stated only in analysis/yield_analysis.ipynb; exercises the notebook preprocessing lane."
+    },
+    {
+      "id": "hl-quality-rework",
+      "tier": "high_level",
+      "answerable": true,
+      "persona": "Quality Lead",
+      "question": "Explain how PedalWorks handles a bicycle that fails inspection.",
+      "expected_sources": [
+        "docs/production.md",
+        "docs/finance.md"
+      ],
+      "reference_key_facts": [
+        "a unit that fails Quality is sent back to Assembly for rework rather than scrapped",
+        "Assembly re-posts a Labor Cost for the rework",
+        "Quality re-inspects the reworked unit",
+        "Quality posts a Scrap Cost for each inspection to the Ledger"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "hl-inventory-reorder",
+      "tier": "high_level",
+      "answerable": true,
+      "persona": "Inventory Manager",
+      "question": "Walk me through how PedalWorks keeps parts in stock and decides when to reorder.",
+      "expected_sources": [
+        "docs/inventory.md",
+        "docs/planning_and_demand.md",
+        "docs/procurement.md"
+      ],
+      "reference_key_facts": [
+        "Stock Tracking monitors PartsDB for stock levels",
+        "the Planner reads PartsDB and detects when a part has run low",
+        "the Planner triggers Procurement to reorder from the part's supplier"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "hl-bom-overview",
+      "tier": "high_level",
+      "answerable": true,
+      "persona": "Design Engineer",
+      "question": "Give me a bill-of-materials overview: what are the five parts and the material each is made of?",
+      "expected_sources": [
+        "docs/bom.md"
+      ],
+      "reference_key_facts": [
+        "Frame is made of Aluminium",
+        "Wheelset is made of Alloy",
+        "Drivetrain is made of Steel",
+        "Brake Set is made of Steel & Rubber",
+        "Suspension Fork is made of Carbon Fibre"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "hl-supply-chain-map",
+      "tier": "high_level",
+      "answerable": true,
+      "persona": "Procurement Lead",
+      "question": "Summarize PedalWorks' supply chain: which supplier provides which part?",
+      "expected_sources": [
+        "docs/procurement.md"
+      ],
+      "reference_key_facts": [
+        "Frames Ltd supplies the Frame",
+        "Wheels Co supplies the Wheelset",
+        "Drivetrain Co supplies the Drivetrain",
+        "Brakes Ltd supplies the Brake Set",
+        "Forks Co supplies the Suspension Fork"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "mh-brakeset-material-via-citycruiser",
+      "tier": "multi_hop",
+      "answerable": true,
+      "hops": 2,
+      "chain": "City Cruiser --uses--> Brake Set --made_of--> Steel & Rubber",
+      "question": "The City Cruiser uses a Brake Set. What material is that Brake Set made of?",
+      "expected_sources": [
+        "docs/production.md",
+        "docs/bom.md"
+      ],
+      "reference_key_facts": [
+        "the City Cruiser uses a Brake Set",
+        "the Brake Set is made of Steel & Rubber"
+      ],
+      "format_probe": false
+    },
+    {
+      "id": "mh-trailblazer-fork-region",
+      "tier": "multi_hop",
+      "answerable": true,
+      "hops": 3,
+      "chain": "Trail Blazer --uses--> Suspension Fork <--supplies-- Forks Co --region--> North-East",
+      "question": "The Trail Blazer uses a fork. Which supplier provides that fork, and which region is that supplier based in?",
+      "expected_sources": [
+        "docs/production.md",
+        "docs/procurement.md",
+        "docs/supplier_catalog.pdf"
+      ],
+      "reference_key_facts": [
+        "the Trail Blazer uses the Suspension Fork",
+        "Forks Co supplies the Suspension Fork",
+        "Forks Co is based in the North-East region"
+      ],
+      "format_probe": false,
+      "notes": "Cross-format hard-band chain: model->part->supplier from prose, supplier->region from the PDF embedded image (recovered by the vision extractor)."
+    },
+    {
+      "id": "mh-suspensionfork-stock-to-supplier",
+      "tier": "multi_hop",
+      "answerable": true,
+      "hops": 2,
+      "chain": "Suspension Fork Stock --tracks--> Suspension Fork <--supplies-- Forks Co",
+      "question": "The inventory spreadsheet tracks a low Suspension Fork stock. When the Planner reorders it, which supplier receives the order?",
+      "expected_sources": [
+        "data/inventory_stock.xlsx",
+        "docs/procurement.md"
+      ],
+      "reference_key_facts": [
+        "the Suspension Fork Stock row tracks the Suspension Fork",
+        "Forks Co supplies the Suspension Fork, so Procurement orders from Forks Co"
+      ],
+      "format_probe": false,
+      "notes": "Cross-format chain: xlsx stock row -> part -> supplier (prose)."
+    },
+    {
+      "id": "u-delivery-time",
+      "tier": "low_level",
+      "answerable": false,
+      "question": "How long does PedalWorks take to deliver a finished bicycle to a customer's home address?",
+      "expected_sources": [],
+      "reference_key_facts": [],
+      "format_probe": false,
+      "notes": "Plausible-but-absent: the corpus covers internal fulfillment (Shipping out of the South Distribution Center) but never a customer delivery time/SLA. Tests refusal."
+    },
+    {
+      "id": "u-assembly-headcount",
+      "tier": "low_level",
+      "answerable": false,
+      "question": "How many workers does PedalWorks employ on the Assembly floor?",
+      "expected_sources": [],
+      "reference_key_facts": [],
+      "format_probe": false,
+      "notes": "Plausible-but-absent: the corpus describes Assembly as a process with build steps and labor cost, but never any headcount/staffing figure anywhere. Tests refusal."
+    }
+  ]
+}

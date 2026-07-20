@@ -1,0 +1,920 @@
+# PedalWorks expected_structure (v2) — ground truth for kb-test-eval-v2.
+# Derived DIRECTLY from kb-test-tooling/target_graph.yaml (Phase 2, Task 5):
+# entities: and edges: below are byte-for-byte the same set as the target graph
+# (same names/kinds/tiers/parents/attrs, same from/type/to/tier edges) — no drift.
+# by_tier is a convenience index (entity names grouped per tier); it is not part
+# of the canonical entity/edge set and carries no independent truth.
+# This is the "one nested set -> three views" ground truth: entities+edges is the
+# nested set, and (tier-0/1/2, by_tier, and the graph itself) are views over it.
+
+# ---------------------------------------------------------------------------
+# LIMITATIONS — what this file can and cannot be used to check:
+#  * RECALL, not precision. The structure check verifies that expected
+#    entities/edges are PRESENT in an extraction. It does NOT bound extra /
+#    junk entities the extractor may invent (precision). A pass here does NOT
+#    mean the extracted graph is clean.
+#  * OVERLAY FIELDS are not extractor-comparable. `tier` and `parent` are our
+#    visualization overlay; `kind` and edge `type` (verb) are our vocabulary.
+#    The current flat engine emits none of these as-is, so they are NOT
+#    directly comparable to extractor output.
+#  * ALIASES are a spelling aid only. `aliases:` are source-grounded, human-
+#    curated surface-form variants of an entity's name. They never change WHICH
+#    facts are required. Aliases are NOT auto-enriched from extraction output
+#    (that would let the system-under-test edit its own answer key); at most, a
+#    run may surface candidate variants for a human to review and add by hand.
+#  * CANONICAL HOME. This file is HAND-MAINTAINED. The one-off
+#    target_graph -> expected_structure derivation is RETIRED; do not
+#    regenerate this file (regeneration would wipe hand-curated aliases).
+#    Entity/edge NAME sets stay in sync with target_graph.yaml via
+#    tests/test_expected_structure.py.
+# ---------------------------------------------------------------------------
+
+entities:
+- name: Planning & Demand
+  kind: theme
+  tier: 0
+  parent: null
+- name: Supply
+  kind: theme
+  tier: 0
+  parent: null
+- name: Inventory
+  kind: theme
+  tier: 0
+  parent: null
+- name: Production
+  kind: theme
+  tier: 0
+  parent: null
+- name: Fulfillment
+  kind: theme
+  tier: 0
+  parent: null
+- name: Finance
+  kind: theme
+  tier: 0
+  parent: null
+- name: OrderDB
+  kind: system
+  tier: 1
+  parent: Planning & Demand
+- name: Planner
+  kind: process
+  tier: 1
+  parent: Planning & Demand
+- name: Customer
+  kind: external_actor
+  tier: 1
+  parent: Planning & Demand
+- name: Procurement
+  kind: process
+  tier: 1
+  parent: Supply
+- name: Frames Ltd
+  kind: supplier
+  tier: 1
+  parent: Supply
+  attrs:
+    region: North
+    lead_time: 14 days
+    unit_cost: $120
+- name: Wheels Co
+  kind: supplier
+  tier: 1
+  parent: Supply
+  attrs:
+    region: East
+    lead_time: 7 days
+    unit_cost: $85
+- name: Drivetrain Co
+  kind: supplier
+  tier: 1
+  parent: Supply
+  attrs:
+    region: West
+    lead_time: 10 days
+    unit_cost: $95
+- name: Brakes Ltd
+  kind: supplier
+  tier: 1
+  parent: Supply
+  attrs:
+    region: South
+    lead_time: 10 days
+    unit_cost: $40
+- name: Forks Co
+  kind: supplier
+  tier: 1
+  parent: Supply
+  attrs:
+    region: North-East
+    lead_time: 12 days
+    unit_cost: $150
+- name: Frame
+  kind: part
+  tier: 1
+  parent: Supply
+  attrs:
+    material: Aluminium
+    lead_time: 14 days
+    unit_cost: $120
+- name: Wheelset
+  kind: part
+  tier: 1
+  parent: Supply
+  attrs:
+    material: Alloy
+    lead_time: 7 days
+    unit_cost: $85
+- name: Drivetrain
+  kind: part
+  tier: 1
+  parent: Supply
+  attrs:
+    material: Steel
+    lead_time: 10 days
+    unit_cost: $95
+- name: Brake Set
+  kind: part
+  tier: 1
+  parent: Supply
+  attrs:
+    material: Steel & Rubber
+    lead_time: 10 days
+    unit_cost: $40
+- name: Suspension Fork
+  kind: part
+  tier: 1
+  parent: Supply
+  attrs:
+    material: Carbon Fibre
+    lead_time: 12 days
+    unit_cost: $150
+- name: North Intake Warehouse
+  kind: location
+  tier: 1
+  parent: Inventory
+- name: PartsDB
+  kind: system
+  tier: 1
+  parent: Inventory
+- name: Stock Tracking
+  kind: sensor
+  tier: 1
+  parent: Inventory
+  attrs:
+    low_stock_rule: on-hand at or below the reorder point
+- name: Assembly
+  kind: process
+  tier: 1
+  parent: Production
+- name: Quality
+  kind: process
+  tier: 1
+  parent: Production
+  aliases:
+  - Quality Control
+  - QC
+- name: Products
+  kind: group
+  tier: 1
+  parent: Production
+- name: South Distribution Center
+  kind: location
+  tier: 1
+  parent: Fulfillment
+- name: Shipping
+  kind: process
+  tier: 1
+  parent: Fulfillment
+- name: Ledger
+  kind: running_total
+  tier: 1
+  parent: Finance
+- name: LedgerDB
+  kind: system
+  tier: 1
+  parent: Finance
+- name: City Cruiser Order
+  kind: order_record
+  tier: 2
+  parent: OrderDB
+  attrs:
+    order_id: ORD-1042
+    model: City Cruiser
+    qty: 20
+    status: Shipped
+    date: '2026-02-01'
+- name: Trail Blazer Order
+  kind: order_record
+  tier: 2
+  parent: OrderDB
+  attrs:
+    order_id: ORD-1077
+    model: Trail Blazer
+    qty: 15
+    status: In Transit
+    date: '2026-02-05'
+- name: Aluminium
+  kind: material
+  tier: 2
+  parent: Frame
+- name: Main Tube Set
+  kind: subpart
+  tier: 2
+  parent: Frame
+- name: Head Tube
+  kind: subpart
+  tier: 2
+  parent: Frame
+- name: Welded Joints
+  kind: subpart
+  tier: 2
+  parent: Frame
+- name: Alloy
+  kind: material
+  tier: 2
+  parent: Wheelset
+- name: Rims
+  kind: subpart
+  tier: 2
+  parent: Wheelset
+- name: Spokes
+  kind: subpart
+  tier: 2
+  parent: Wheelset
+- name: Hub
+  kind: subpart
+  tier: 2
+  parent: Wheelset
+- name: Tyres
+  kind: subpart
+  tier: 2
+  parent: Wheelset
+- name: Steel
+  kind: material
+  tier: 2
+  parent: Drivetrain
+- name: Chain
+  kind: subpart
+  tier: 2
+  parent: Drivetrain
+- name: Cassette
+  kind: subpart
+  tier: 2
+  parent: Drivetrain
+- name: Crankset
+  kind: subpart
+  tier: 2
+  parent: Drivetrain
+- name: Derailleur
+  kind: subpart
+  tier: 2
+  parent: Drivetrain
+- name: Steel & Rubber
+  kind: material
+  tier: 2
+  parent: Brake Set
+- name: Calipers
+  kind: subpart
+  tier: 2
+  parent: Brake Set
+- name: Brake Pads
+  kind: subpart
+  tier: 2
+  parent: Brake Set
+- name: Levers
+  kind: subpart
+  tier: 2
+  parent: Brake Set
+- name: Carbon Fibre
+  kind: material
+  tier: 2
+  parent: Suspension Fork
+- name: Stanchions
+  kind: subpart
+  tier: 2
+  parent: Suspension Fork
+- name: Lowers
+  kind: subpart
+  tier: 2
+  parent: Suspension Fork
+- name: Spring/Damper
+  kind: subpart
+  tier: 2
+  parent: Suspension Fork
+- name: Warehouse Capacity
+  kind: capacity_spec
+  tier: 2
+  parent: North Intake Warehouse
+  attrs:
+    value: 3000 units
+- name: Goods-Receipt Log
+  kind: log
+  tier: 2
+  parent: North Intake Warehouse
+- name: Frame Stock
+  kind: stock_record
+  tier: 2
+  parent: PartsDB
+  attrs:
+    on_hand: 5
+    reorder: 3
+    safety: 2
+- name: Wheelset Stock
+  kind: stock_record
+  tier: 2
+  parent: PartsDB
+  attrs:
+    on_hand: 8
+    reorder: 4
+    safety: 2
+- name: Drivetrain Stock
+  kind: stock_record
+  tier: 2
+  parent: PartsDB
+  attrs:
+    on_hand: 6
+    reorder: 3
+    safety: 2
+- name: Brake Set Stock
+  kind: stock_record
+  tier: 2
+  parent: PartsDB
+  attrs:
+    on_hand: 10
+    reorder: 5
+    safety: 3
+- name: Suspension Fork Stock
+  kind: stock_record
+  tier: 2
+  parent: PartsDB
+  attrs:
+    on_hand: 4
+    reorder: 3
+    safety: 1
+- name: Mount Frame
+  kind: build_step
+  tier: 2
+  parent: Assembly
+  attrs:
+    step_number: 1
+- name: Attach Wheelset
+  kind: build_step
+  tier: 2
+  parent: Assembly
+  attrs:
+    step_number: 2
+- name: Install Drivetrain
+  kind: build_step
+  tier: 2
+  parent: Assembly
+  attrs:
+    step_number: 3
+- name: Fit Brakes
+  kind: build_step
+  tier: 2
+  parent: Assembly
+  attrs:
+    step_number: 4
+- name: Final Fit
+  kind: build_step
+  tier: 2
+  parent: Assembly
+  attrs:
+    step_number: 5
+- name: First-Article Inspection
+  kind: qc_check
+  tier: 2
+  parent: Quality
+  attrs:
+    step_number: 1
+    result_rule: first unit always fails
+- name: Weld Test
+  kind: qc_check
+  tier: 2
+  parent: Quality
+  attrs:
+    step_number: 2
+- name: Brake Test
+  kind: qc_check
+  tier: 2
+  parent: Quality
+  attrs:
+    step_number: 3
+- name: Wheel-Alignment Check
+  kind: qc_check
+  tier: 2
+  parent: Quality
+  attrs:
+    step_number: 4
+- name: City Cruiser
+  kind: model
+  tier: 2
+  parent: Products
+- name: Trail Blazer
+  kind: model
+  tier: 2
+  parent: Products
+- name: First-Pass Yield
+  kind: concept
+  tier: 2
+  parent: Quality
+  attrs:
+    units_per_run: 50 units
+    first_article_failures: 1 unit
+    first_pass_yield: 98.0%
+- name: DC Capacity
+  kind: capacity_spec
+  tier: 2
+  parent: South Distribution Center
+  attrs:
+    value: 1500 units
+- name: Staging Area
+  kind: area
+  tier: 2
+  parent: South Distribution Center
+- name: City Cruiser Shipment
+  kind: shipment_record
+  tier: 2
+  parent: Shipping
+  attrs:
+    carrier: Northline Freight
+    freight: $25
+    ship_date: '2026-02-10'
+    delivery_status: Delivered
+- name: Trail Blazer Shipment
+  kind: shipment_record
+  tier: 2
+  parent: Shipping
+  attrs:
+    carrier: Cascade Logistics
+    freight: $30
+    ship_date: '2026-02-14'
+    delivery_status: In Transit
+- name: Purchase Cost
+  kind: cost_kind
+  tier: 2
+  parent: Ledger
+  attrs:
+    source: Procurement
+- name: Labor Cost
+  kind: cost_kind
+  tier: 2
+  parent: Ledger
+  attrs:
+    source: Assembly
+- name: Scrap Cost
+  kind: cost_kind
+  tier: 2
+  parent: Ledger
+  attrs:
+    source: Quality
+- name: Freight Cost
+  kind: cost_kind
+  tier: 2
+  parent: Ledger
+  attrs:
+    source: Shipping
+- name: Purchase Ledger Entry
+  kind: ledger_entry
+  tier: 2
+  parent: Ledger
+  attrs:
+    stage: Supply
+    kind: Purchase Cost
+    amount: $120
+- name: Labor Ledger Entry
+  kind: ledger_entry
+  tier: 2
+  parent: Ledger
+  attrs:
+    stage: Production
+    kind: Labor Cost
+    amount: $45
+- name: Scrap Ledger Entry
+  kind: ledger_entry
+  tier: 2
+  parent: Ledger
+  attrs:
+    stage: Production
+    kind: Scrap Cost
+    amount: $10
+- name: Freight Ledger Entry
+  kind: ledger_entry
+  tier: 2
+  parent: Ledger
+  attrs:
+    stage: Fulfillment
+    kind: Freight Cost
+    amount: $25
+edges:
+- from: Planning & Demand
+  type: reorders
+  to: Supply
+  tier: 0
+- from: Planning & Demand
+  type: plans
+  to: Production
+  tier: 0
+- from: Planning & Demand
+  type: reads_stock
+  to: Inventory
+  tier: 0
+- from: Supply
+  type: posts_cost
+  to: Finance
+  tier: 0
+- from: Production
+  type: posts_cost
+  to: Finance
+  tier: 0
+- from: Fulfillment
+  type: posts_cost
+  to: Finance
+  tier: 0
+- from: Fulfillment
+  type: reports_shipped
+  to: Planning & Demand
+  tier: 0
+- from: Planner
+  type: reads
+  to: OrderDB
+  tier: 1
+- from: Planner
+  type: reads_stock
+  to: PartsDB
+  tier: 1
+- from: Planner
+  type: plans_build
+  to: Assembly
+  tier: 1
+- from: Planner
+  type: reorders
+  to: Procurement
+  tier: 1
+- from: Procurement
+  type: orders_from
+  to: Frames Ltd
+  tier: 1
+- from: Procurement
+  type: orders_from
+  to: Wheels Co
+  tier: 1
+- from: Procurement
+  type: orders_from
+  to: Drivetrain Co
+  tier: 1
+- from: Procurement
+  type: orders_from
+  to: Brakes Ltd
+  tier: 1
+- from: Procurement
+  type: orders_from
+  to: Forks Co
+  tier: 1
+- from: Frames Ltd
+  type: supplies
+  to: Frame
+  tier: 1
+- from: Wheels Co
+  type: supplies
+  to: Wheelset
+  tier: 1
+- from: Drivetrain Co
+  type: supplies
+  to: Drivetrain
+  tier: 1
+- from: Brakes Ltd
+  type: supplies
+  to: Brake Set
+  tier: 1
+- from: Forks Co
+  type: supplies
+  to: Suspension Fork
+  tier: 1
+- from: Stock Tracking
+  type: monitors
+  to: PartsDB
+  tier: 1
+- from: Assembly
+  type: feeds
+  to: Quality
+  tier: 1
+- from: Quality
+  type: reworks_to
+  to: Assembly
+  tier: 1
+- from: Ledger
+  type: stores
+  to: LedgerDB
+  tier: 1
+- from: Customer
+  type: places
+  to: City Cruiser Order
+  tier: 2
+- from: Customer
+  type: places
+  to: Trail Blazer Order
+  tier: 2
+- from: City Cruiser Order
+  type: fulfilled_by
+  to: City Cruiser Shipment
+  tier: 2
+- from: Trail Blazer Order
+  type: fulfilled_by
+  to: Trail Blazer Shipment
+  tier: 2
+- from: Frame
+  type: made_of
+  to: Aluminium
+  tier: 2
+- from: Frame
+  type: has_subpart
+  to: Main Tube Set
+  tier: 2
+- from: Frame
+  type: has_subpart
+  to: Head Tube
+  tier: 2
+- from: Frame
+  type: has_subpart
+  to: Welded Joints
+  tier: 2
+- from: Wheelset
+  type: made_of
+  to: Alloy
+  tier: 2
+- from: Wheelset
+  type: has_subpart
+  to: Rims
+  tier: 2
+- from: Wheelset
+  type: has_subpart
+  to: Spokes
+  tier: 2
+- from: Wheelset
+  type: has_subpart
+  to: Hub
+  tier: 2
+- from: Wheelset
+  type: has_subpart
+  to: Tyres
+  tier: 2
+- from: Drivetrain
+  type: made_of
+  to: Steel
+  tier: 2
+- from: Drivetrain
+  type: has_subpart
+  to: Chain
+  tier: 2
+- from: Drivetrain
+  type: has_subpart
+  to: Cassette
+  tier: 2
+- from: Drivetrain
+  type: has_subpart
+  to: Crankset
+  tier: 2
+- from: Drivetrain
+  type: has_subpart
+  to: Derailleur
+  tier: 2
+- from: Brake Set
+  type: made_of
+  to: Steel & Rubber
+  tier: 2
+- from: Brake Set
+  type: has_subpart
+  to: Calipers
+  tier: 2
+- from: Brake Set
+  type: has_subpart
+  to: Brake Pads
+  tier: 2
+- from: Brake Set
+  type: has_subpart
+  to: Levers
+  tier: 2
+- from: Suspension Fork
+  type: made_of
+  to: Carbon Fibre
+  tier: 2
+- from: Suspension Fork
+  type: has_subpart
+  to: Stanchions
+  tier: 2
+- from: Suspension Fork
+  type: has_subpart
+  to: Lowers
+  tier: 2
+- from: Suspension Fork
+  type: has_subpart
+  to: Spring/Damper
+  tier: 2
+- from: Frame Stock
+  type: tracks
+  to: Frame
+  tier: 2
+- from: Wheelset Stock
+  type: tracks
+  to: Wheelset
+  tier: 2
+- from: Drivetrain Stock
+  type: tracks
+  to: Drivetrain
+  tier: 2
+- from: Brake Set Stock
+  type: tracks
+  to: Brake Set
+  tier: 2
+- from: Suspension Fork Stock
+  type: tracks
+  to: Suspension Fork
+  tier: 2
+- from: Mount Frame
+  type: next
+  to: Attach Wheelset
+  tier: 2
+- from: Attach Wheelset
+  type: next
+  to: Install Drivetrain
+  tier: 2
+- from: Install Drivetrain
+  type: next
+  to: Fit Brakes
+  tier: 2
+- from: Fit Brakes
+  type: next
+  to: Final Fit
+  tier: 2
+- from: First-Article Inspection
+  type: next
+  to: Weld Test
+  tier: 2
+- from: Weld Test
+  type: next
+  to: Brake Test
+  tier: 2
+- from: Brake Test
+  type: next
+  to: Wheel-Alignment Check
+  tier: 2
+- from: City Cruiser
+  type: uses
+  to: Frame
+  tier: 2
+- from: City Cruiser
+  type: uses
+  to: Wheelset
+  tier: 2
+- from: City Cruiser
+  type: uses
+  to: Drivetrain
+  tier: 2
+- from: City Cruiser
+  type: uses
+  to: Brake Set
+  tier: 2
+- from: Trail Blazer
+  type: uses
+  to: Frame
+  tier: 2
+- from: Trail Blazer
+  type: uses
+  to: Wheelset
+  tier: 2
+- from: Trail Blazer
+  type: uses
+  to: Suspension Fork
+  tier: 2
+- from: City Cruiser Shipment
+  type: ships
+  to: City Cruiser
+  tier: 2
+- from: Trail Blazer Shipment
+  type: ships
+  to: Trail Blazer
+  tier: 2
+- from: Procurement
+  type: posts
+  to: Purchase Cost
+  tier: 2
+- from: Assembly
+  type: posts
+  to: Labor Cost
+  tier: 2
+- from: Quality
+  type: posts
+  to: Scrap Cost
+  tier: 2
+- from: Shipping
+  type: posts
+  to: Freight Cost
+  tier: 2
+- from: Purchase Ledger Entry
+  type: of_kind
+  to: Purchase Cost
+  tier: 2
+- from: Labor Ledger Entry
+  type: of_kind
+  to: Labor Cost
+  tier: 2
+- from: Scrap Ledger Entry
+  type: of_kind
+  to: Scrap Cost
+  tier: 2
+- from: Freight Ledger Entry
+  type: of_kind
+  to: Freight Cost
+  tier: 2
+by_tier:
+  0:
+  - Planning & Demand
+  - Supply
+  - Inventory
+  - Production
+  - Fulfillment
+  - Finance
+  1:
+  - OrderDB
+  - Planner
+  - Customer
+  - Procurement
+  - Frames Ltd
+  - Wheels Co
+  - Drivetrain Co
+  - Brakes Ltd
+  - Forks Co
+  - Frame
+  - Wheelset
+  - Drivetrain
+  - Brake Set
+  - Suspension Fork
+  - North Intake Warehouse
+  - PartsDB
+  - Stock Tracking
+  - Assembly
+  - Quality
+  - Products
+  - South Distribution Center
+  - Shipping
+  - Ledger
+  - LedgerDB
+  2:
+  - City Cruiser Order
+  - Trail Blazer Order
+  - Aluminium
+  - Main Tube Set
+  - Head Tube
+  - Welded Joints
+  - Alloy
+  - Rims
+  - Spokes
+  - Hub
+  - Tyres
+  - Steel
+  - Chain
+  - Cassette
+  - Crankset
+  - Derailleur
+  - Steel & Rubber
+  - Calipers
+  - Brake Pads
+  - Levers
+  - Carbon Fibre
+  - Stanchions
+  - Lowers
+  - Spring/Damper
+  - Warehouse Capacity
+  - Goods-Receipt Log
+  - Frame Stock
+  - Wheelset Stock
+  - Drivetrain Stock
+  - Brake Set Stock
+  - Suspension Fork Stock
+  - Mount Frame
+  - Attach Wheelset
+  - Install Drivetrain
+  - Fit Brakes
+  - Final Fit
+  - First-Article Inspection
+  - Weld Test
+  - Brake Test
+  - Wheel-Alignment Check
+  - City Cruiser
+  - Trail Blazer
+  - First-Pass Yield
+  - DC Capacity
+  - Staging Area
+  - City Cruiser Shipment
+  - Trail Blazer Shipment
+  - Purchase Cost
+  - Labor Cost
+  - Scrap Cost
+  - Freight Cost
+  - Purchase Ledger Entry
+  - Labor Ledger Entry
+  - Scrap Ledger Entry
+  - Freight Ledger Entry
