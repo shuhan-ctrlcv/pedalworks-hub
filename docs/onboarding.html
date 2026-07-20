@@ -320,21 +320,13 @@ The picture below is the tier-0 (theme-level) map from
 <pre><code>                        +-----------------------+
                         |   Planning &amp; Demand    |
                         +-----------------------+
-                           |        |        ^
-                     reorders   reads_stock  |
-                           |        |    reports_shipped
-                           v        v        |
-              +---------+   +-----------+   +--------------+
-              | Supply  |   | Inventory |   | Fulfillment  |
-              +---------+   +-----------+   +--------------+
-                   |                              ^
-                   |         plans                |
-                   +----&gt; Planning &amp; Demand -------+
-                           |
-                           v
-                     +------------+
-                     | Production |
-                     +------------+
+                       |       |        |        ^
+                 reorders  reads_stock  plans     |
+                       |       |        |   reports_shipped
+                       v       v        v         |
+              +---------+ +-----------+ +------------+ +--------------+
+              | Supply  | | Inventory | | Production | | Fulfillment  |
+              +---------+ +-----------+ +------------+ +--------------+
 
               Supply, Production, and Fulfillment each
                         posts_cost
@@ -344,7 +336,7 @@ The picture below is the tier-0 (theme-level) map from
                        | Finance  |
                        +----------+
 </code></pre>
-<p class="caption">Reproduced from <code>eval/_cross_source/system-map.md</code> — that file is generated from <code>structure.yaml</code>, not hand-drawn.</p>
+<p class="caption">Reproduced from <code>eval/_cross_source/system-map.md</code> — that file is hand-maintained; keep it in sync with <code>structure.yaml</code>.</p>
 
 <p>All <strong>30</strong> cross-source edges, grouped by tier (machine-checked, from <code>eval/_cross_source/structure.yaml</code>):</p>
 <div style="overflow-x:auto">
@@ -455,7 +447,7 @@ the documents — it can't be adjusted to make a run look better.
 
 <h2 id="verify">9 · Verifying your change</h2>
 <p>The one command (from <code>UPDATE-GUIDE.md</code> / <code>README.md</code>):</p>
-<pre><code>cd pedalworks-hub &amp;&amp; PYTHONPATH=. /home/nine/anaconda3/envs/road_asset/bin/python -m tooling.multirepo.verify</code></pre>
+<pre><code>cd pedalworks-hub &amp;&amp; PYTHONPATH=. python3 -m tooling.multirepo.verify</code></pre>
 <p>What it catches (from <code>tooling/multirepo/verify.py</code>):</p>
 <ul>
   <li><span class="badge badge-blue">single_ownership</span> no entity is defined in more than one area.</li>

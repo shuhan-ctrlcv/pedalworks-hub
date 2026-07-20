@@ -38,7 +38,7 @@ counterpart.
 - **Checking your edit is consistent:**
 
   ```bash
-  cd pedalworks-hub && PYTHONPATH=. /home/nine/anaconda3/envs/road_asset/bin/python -m tooling.multirepo.verify
+  cd pedalworks-hub && PYTHONPATH=. python3 -m tooling.multirepo.verify
   ```
 
 - **New to PedalWorks?** See `docs/onboarding.html` for a colleague-facing

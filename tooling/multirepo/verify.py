@@ -64,13 +64,16 @@ def check_qa_equivalence(hub_eval, v2_qa_path) -> list[str]:
                 viol.append(f"qa {i}: field {field!r} changed")
     return viol
 
-def run_static(hub_eval, v2_struct, v2_qa) -> dict:
+def run_static(hub_eval, v2_struct, v2_qa, umbrella="..") -> dict:
     return {
         "structure_equivalence": check_structure_equivalence(hub_eval, v2_struct),
         "qa_equivalence": check_qa_equivalence(hub_eval, v2_qa),
         "referential_integrity": check_referential_integrity(hub_eval),
         "single_ownership": check_single_ownership(hub_eval),
         "parent_tier": check_parent_tier(hub_eval),
+        "qa_sources_exist": check_qa_sources_exist(hub_eval, umbrella),
+        "cited_code_facts": check_cited_code_facts(umbrella),
+        "format_probes": check_format_probes(umbrella),
     }
 
 # Exact substrings each QA-cited code file MUST still contain after the rewrite.

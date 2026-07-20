@@ -24,7 +24,7 @@ def test_referential_integrity_catches_dangling(tmp_path):
     open(ev/"_cross_source"/"structure.yaml","w").write("edges: []\n")
     assert any("GHOST" in v for v in verify.check_referential_integrity(str(ev)))
 
-UMB = "/media/nine/HD_2/shuhan/knowledge-base/pedalworks"
+UMB = ".."
 def test_qa_sources_exist_on_disk():
     assert verify.check_qa_sources_exist("eval", UMB) == []
 def test_all_format_probes_present():

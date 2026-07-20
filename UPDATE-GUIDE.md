@@ -15,7 +15,7 @@ Every update follows the same loop:
 4. Run the verifier:
 
 ```bash
-cd pedalworks-hub && PYTHONPATH=. /home/nine/anaconda3/envs/road_asset/bin/python -m tooling.multirepo.verify
+cd pedalworks-hub && PYTHONPATH=. python3 -m tooling.multirepo.verify
 ```
 
 Pick the path below that matches the change.

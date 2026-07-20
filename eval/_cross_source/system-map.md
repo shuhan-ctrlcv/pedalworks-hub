@@ -22,21 +22,13 @@ generated it.
                         +-----------------------+
                         |   Planning & Demand    |
                         +-----------------------+
-                           |        |        ^
-                     reorders   reads_stock  |
-                           |        |    reports_shipped
-                           v        v        |
-              +---------+   +-----------+   +--------------+
-              | Supply  |   | Inventory |   | Fulfillment  |
-              +---------+   +-----------+   +--------------+
-                   |                              ^
-                   |         plans                |
-                   +----> Planning & Demand -------+
-                           |
-                           v
-                     +------------+
-                     | Production |
-                     +------------+
+                       |       |        |        ^
+                 reorders  reads_stock  plans     |
+                       |       |        |   reports_shipped
+                       v       v        v         |
+              +---------+ +-----------+ +------------+ +--------------+
+              | Supply  | | Inventory | | Production | | Fulfillment  |
+              +---------+ +-----------+ +------------+ +--------------+
 
               Supply, Production, and Fulfillment each
                         posts_cost
@@ -75,8 +67,8 @@ write.
 
 The 30 edges below are the machine-checked cross-source edges from
 `eval/_cross_source/structure.yaml` — every edge whose two endpoints are
-owned by different areas, regardless of tier. This list is generated, not
-hand-maintained; regenerate from `eval/_cross_source/structure.yaml`.
+owned by different areas, regardless of tier. This list is hand-maintained;
+keep it in sync with `eval/_cross_source/structure.yaml`.
 
 - Planning & Demand --reorders--> Supply (tier 0)
 - Planning & Demand --plans--> Production (tier 0)

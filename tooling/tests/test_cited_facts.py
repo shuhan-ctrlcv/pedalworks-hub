@@ -1,6 +1,6 @@
 from tooling.multirepo import verify
 
-UMB = "/media/nine/HD_2/shuhan/knowledge-base/pedalworks"
+UMB = ".."
 
 
 def test_cited_code_facts_survive():
