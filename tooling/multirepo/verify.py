@@ -93,6 +93,24 @@ def check_cited_code_facts(umbrella) -> list[str]:
                 viol.append(f"{rel}: lost cited fact {n!r}")
     return viol
 
+def check_qa_sources_exist(hub_eval, umbrella) -> list[str]:
+    viol = []
+    for q in merge.merge_qa(hub_eval)["questions"]:
+        for s in q.get("expected_sources", []):
+            if not os.path.exists(os.path.join(umbrella, s)):
+                viol.append(f"qa {q['id']}: source not found: {s}")
+    return viol
+
+_PROBES = {"pdf": ".pdf", "docx": ".docx", "xlsx": ".xlsx", "pptx": ".pptx", "ipynb": ".ipynb"}
+def check_format_probes(umbrella) -> list[str]:
+    found = set()
+    for root, _, files in os.walk(umbrella):
+        if "pedalworks-hub" in root: continue
+        for f in files:
+            for k, ext in _PROBES.items():
+                if f.endswith(ext): found.add(k)
+    return [f"missing format probe: {k}" for k in _PROBES if k not in found]
+
 if __name__ == "__main__":
     import sys
     res = run_static("eval", "tooling/baseline/expected_structure.yaml",
