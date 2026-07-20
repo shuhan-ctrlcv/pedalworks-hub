@@ -73,6 +73,26 @@ def run_static(hub_eval, v2_struct, v2_qa) -> dict:
         "parent_tier": check_parent_tier(hub_eval),
     }
 
+# Exact substrings each QA-cited code file MUST still contain after the rewrite.
+CITED_CODE_FACTS = {
+    "pedalworks-order-planning/src/planner.py": ["_LOW_STOCK_THRESHOLD = 1"],
+    "pedalworks-production/src/quality.py": ["_inspected == 1"],
+    "pedalworks-production/src/trailblazer.py": ["Assembly Floor"],
+    "pedalworks-finance/src/models.py": ["LedgerEntry", "stage", "kind", "amount"],
+}
+
+def check_cited_code_facts(umbrella) -> list[str]:
+    viol = []
+    for rel, needles in CITED_CODE_FACTS.items():
+        p = os.path.join(umbrella, rel)
+        if not os.path.exists(p):
+            viol.append(f"missing cited file: {rel}"); continue
+        txt = open(p).read()
+        for n in needles:
+            if n not in txt:
+                viol.append(f"{rel}: lost cited fact {n!r}")
+    return viol
+
 if __name__ == "__main__":
     import sys
     res = run_static("eval", "tooling/baseline/expected_structure.yaml",
