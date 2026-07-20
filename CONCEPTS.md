@@ -33,6 +33,24 @@ We use tiers for **two reasons**:
 
 Full explanation: `SCHEMA.md` → "The tier system — what it is and why".
 
+## Setup (one-time)
+
+The hub and the 6 content repos are separate GitHub repos, but the tooling
+expects them **cloned into one parent folder** (the content repos are siblings
+of `pedalworks-hub`):
+
+```bash
+mkdir pedalworks && cd pedalworks
+for r in order-planning procurement warehouse production shipping finance hub; do
+  git clone https://github.com/shuhan-ctrlcv/pedalworks-$r.git
+done
+pip install pyyaml          # the only dependency
+```
+
+If you clone only the hub, the verifier still runs the ground-truth checks but
+**skips** the three checks that need the content files (it tells you so) — clone
+the content repos alongside to enable them.
+
 ## Where to go next
 
 - **Add or change content?** → `UPDATE-GUIDE.md` (Path A: extend an area · Path

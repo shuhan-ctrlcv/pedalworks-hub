@@ -64,17 +64,44 @@ def check_qa_equivalence(hub_eval, v2_qa_path) -> list[str]:
                 viol.append(f"qa {i}: field {field!r} changed")
     return viol
 
+def check_system_map_sync(hub_eval) -> list[str]:
+    """The '## Cross-source edges' section of system-map.md must match what the
+    generator produces from _cross_source/structure.yaml (no hand-drift)."""
+    from tooling.multirepo import system_map
+    if system_map.render_section(hub_eval).strip() != system_map.current_section(hub_eval).strip():
+        return ["system-map.md cross-source edges out of sync with structure.yaml "
+                "-- regenerate: python -m tooling.multirepo.system_map"]
+    return []
+
+_CONTENT_REPOS = ("pedalworks-order-planning", "pedalworks-procurement",
+                  "pedalworks-warehouse", "pedalworks-production",
+                  "pedalworks-shipping", "pedalworks-finance")
+
+def content_repos_present(umbrella) -> bool:
+    """True if the content repos are cloned alongside the hub (needed for the
+    content-cross-checks). A hub-only clone returns False -> those checks skip."""
+    return any(os.path.isdir(os.path.join(umbrella, r)) for r in _CONTENT_REPOS)
+
 def run_static(hub_eval, v2_struct, v2_qa, umbrella="..") -> dict:
-    return {
+    """All checks. Value is list[str] for a check that ran (empty = pass); None
+    for a content-check skipped because the content repos aren't alongside the hub."""
+    res = {
         "structure_equivalence": check_structure_equivalence(hub_eval, v2_struct),
         "qa_equivalence": check_qa_equivalence(hub_eval, v2_qa),
         "referential_integrity": check_referential_integrity(hub_eval),
         "single_ownership": check_single_ownership(hub_eval),
         "parent_tier": check_parent_tier(hub_eval),
-        "qa_sources_exist": check_qa_sources_exist(hub_eval, umbrella),
-        "cited_code_facts": check_cited_code_facts(umbrella),
-        "format_probes": check_format_probes(umbrella),
+        "system_map_sync": check_system_map_sync(hub_eval),
     }
+    if content_repos_present(umbrella):
+        res["qa_sources_exist"] = check_qa_sources_exist(hub_eval, umbrella)
+        res["cited_code_facts"] = check_cited_code_facts(umbrella)
+        res["format_probes"] = check_format_probes(umbrella)
+    else:
+        res["qa_sources_exist"] = None
+        res["cited_code_facts"] = None
+        res["format_probes"] = None
+    return res
 
 # Exact substrings each QA-cited code file MUST still contain after the rewrite.
 CITED_CODE_FACTS = {
@@ -118,9 +145,17 @@ if __name__ == "__main__":
     import sys
     res = run_static("eval", "tooling/baseline/expected_structure.yaml",
                      "tooling/baseline/gold_qa.json")
-    ok = all(not v for v in res.values())
+    ran = {k: v for k, v in res.items() if v is not None}
+    skipped = [k for k, v in res.items() if v is None]
+    ok = all(not v for v in ran.values())
     for k, v in res.items():
-        print(f"{'OK  ' if not v else 'FAIL'} {k}" + ("" if not v else f" ({len(v)})"))
-        for line in v[:20]:
-            print("   -", line)
+        if v is None:
+            print(f"SKIP {k} (content repos not found alongside the hub)")
+        else:
+            print(f"{'OK  ' if not v else 'FAIL'} {k}" + ("" if not v else f" ({len(v)})"))
+            for line in v[:20]:
+                print("   -", line)
+    if skipped:
+        print("\nNote: clone the 6 content repos as siblings of pedalworks-hub "
+              "(same parent folder) to enable the skipped content checks.")
     sys.exit(0 if ok else 1)

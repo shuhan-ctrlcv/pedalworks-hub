@@ -67,8 +67,9 @@ write.
 
 The 30 edges below are the machine-checked cross-source edges from
 `eval/_cross_source/structure.yaml` — every edge whose two endpoints are
-owned by different areas, regardless of tier. This list is hand-maintained;
-keep it in sync with `eval/_cross_source/structure.yaml`.
+owned by different areas, regardless of tier. **Generated — do not edit by
+hand; regenerate with `python -m tooling.multirepo.system_map`** (the
+verifier's `system_map_sync` check enforces this).
 
 - Planning & Demand --reorders--> Supply (tier 0)
 - Planning & Demand --plans--> Production (tier 0)

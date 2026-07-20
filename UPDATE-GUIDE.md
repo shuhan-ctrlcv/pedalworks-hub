@@ -34,8 +34,12 @@ Pick the path below that matches the change.
 5. Add ≥1 question to the area's `qa.yaml` (or `_cross_source/qa.yaml` if it
    spans repos), with **repo-qualified** `expected_sources` +
    `reference_key_facts`.
-6. Update `_cross_source/system-map.md` only if a cross-source edge was
-   added.
+6. If you added a cross-source edge, regenerate the map (don't hand-edit it):
+
+   ```bash
+   cd pedalworks-hub && PYTHONPATH=. python3 -m tooling.multirepo.system_map
+   ```
+
 7. Run the verifier.
 
 ## Path B — add a new Tier-0 node / new repo (e.g. Forecasting, Marketing)
